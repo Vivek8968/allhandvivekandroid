@@ -7,52 +7,56 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Shop(
     @SerializedName("id")
-    val id: Int,
-    @SerializedName("user_id")
-    val userId: Int,
+    val id: String,
     @SerializedName("name")
     val name: String,
     @SerializedName("description")
     val description: String?,
-    @SerializedName("whatsapp_number")
-    val whatsappNumber: String,
     @SerializedName("address")
     val address: String,
     @SerializedName("latitude")
     val latitude: Double,
     @SerializedName("longitude")
     val longitude: Double,
-    @SerializedName("image_url")
-    val imageUrl: String?,
-    @SerializedName("banner_url")
-    val bannerUrl: String?,
-    @SerializedName("is_approved")
-    val isApproved: Boolean = false,
-    @SerializedName("created_at")
-    val createdAt: String,
-    @SerializedName("updated_at")
-    val updatedAt: String,
     @SerializedName("distance")
-    val distance: Double? = null // Distance from user location in km
+    val distance: Double? = null,
+    @SerializedName("distanceFormatted")
+    val distanceFormatted: String? = null,
+    @SerializedName("category")
+    val category: String,
+    @SerializedName("rating")
+    val rating: Double = 0.0,
+    @SerializedName("imageUrl")
+    val imageUrl: String?,
+    @SerializedName("ownerId")
+    val ownerId: String,
+    @SerializedName("isOpen")
+    val isOpen: Boolean = true,
+    @SerializedName("openingTime")
+    val openingTime: String = "09:00",
+    @SerializedName("closingTime")
+    val closingTime: String = "21:00"
 ) : Parcelable
 
 data class ShopCreateRequest(
     @SerializedName("name")
     val name: String,
     @SerializedName("description")
-    val description: String?,
-    @SerializedName("whatsapp_number")
-    val whatsappNumber: String,
+    val description: String,
     @SerializedName("address")
     val address: String,
     @SerializedName("latitude")
     val latitude: Double,
     @SerializedName("longitude")
     val longitude: Double,
-    @SerializedName("image_url")
+    @SerializedName("category")
+    val category: String,
+    @SerializedName("imageUrl")
     val imageUrl: String? = null,
-    @SerializedName("banner_url")
-    val bannerUrl: String? = null
+    @SerializedName("openingTime")
+    val openingTime: String = "09:00",
+    @SerializedName("closingTime")
+    val closingTime: String = "21:00"
 )
 
 data class ShopUpdateRequest(

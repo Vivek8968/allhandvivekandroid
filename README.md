@@ -1,291 +1,305 @@
 # Hyperlocal Marketplace Android App
 
-A comprehensive hyperlocal marketplace Android application built with Kotlin and Jetpack Compose that connects to a backend microservices architecture. The app supports three user roles: **Customer**, **Seller**, and **Admin**.
+A comprehensive hyperlocal marketplace application built with Kotlin and Jetpack Compose, featuring backend integration and three distinct user roles: Customer, Seller, and Admin.
+
+## 🎯 Current Status
+
+### ✅ Completed Features
+- **Backend Integration**: Successfully connected to API gateway
+- **API Services**: Retrofit interfaces for all backend endpoints
+- **Data Models**: Kotlin models matching API response structure
+- **Repository Pattern**: Data access layer with error handling
+- **Network Configuration**: Emulator and device connectivity
+- **APK Build**: 19MB debug APK generated successfully
+- **Integration Testing**: Backend connectivity verified
+
+### 🔄 In Progress
+- UI component integration with new API structure
+- Firebase authentication integration
+- Location-based services
+- Complete seller and admin dashboards
 
 ## 🏗️ Architecture
 
-- **MVVM Architecture** with Repository Pattern
-- **Jetpack Compose** for modern UI
-- **Hilt** for Dependency Injection
-- **Retrofit** for API communication
-- **Material 3** design system
-- **StateFlow** for reactive state management
+### Backend Integration
+- **API Gateway**: Running on port 12000
+- **Unified API**: Single endpoint for all services
+- **Standardized Responses**: Consistent JSON format
+- **Error Handling**: Proper error propagation
 
-## 📱 Features
+### Tech Stack
+- **Language**: Kotlin
+- **UI Framework**: Jetpack Compose with Material 3
+- **Architecture**: MVVM with Repository Pattern
+- **Dependency Injection**: Hilt
+- **Networking**: Retrofit + OkHttp
+- **Backend**: Python FastAPI gateway
+- **Authentication**: Firebase Auth (planned)
 
-### Customer Module
-- 🗺️ Explore shops by geolocation
-- 📂 Browse categories & products
-- 🏪 View shop details with WhatsApp contact
-- 🔍 Search products
-- 🛒 Place demo orders
-
-### Seller Module
-- 📝 Register as seller with shop information
-- 📦 Upload inventory (manual or voice-to-text)
-- 📱 Generate QR code for digital storefront
-- 📋 View incoming orders
-- 📊 Shop management dashboard
-
-### Admin Module
-- 👤 Admin authentication
-- 👥 View sellers, shops, and customers
-- ✅ Approve/Reject shop onboarding
-- 📈 Analytics dashboard
+### Project Structure
+```
+app/
+├── src/main/java/com/hyperlocal/marketplace/
+│   ├── config/                 # API configuration
+│   ├── data/
+│   │   ├── api/               # Retrofit service interfaces
+│   │   ├── models/            # Data models matching API
+│   │   └── repository/        # Repository implementations
+│   ├── TestBackendActivity.kt # Integration testing
+│   └── presentation/theme/    # UI theme components
+```
 
 ## 🔧 Setup Instructions
 
 ### Prerequisites
-- Android Studio Arctic Fox or later
-- JDK 17
-- Android SDK API 26+
-- Git
+- Android Studio Hedgehog (2023.1.1) or later
+- JDK 17 or later
+- Android SDK API 34
+- Python 3.8+ (for backend)
 
-### Building the Project
-
-1. **Clone the repository:**
+### Backend Setup
+1. **Clone backend repository**
    ```bash
-   git clone <repository-url>
-   cd HyperlocalMarketplace
+   git clone https://github.com/Vivek8968/hyperlocalbymanus.git
+   cd hyperlocalbymanus
    ```
 
-2. **Open in Android Studio:**
+2. **Install dependencies**
+   ```bash
+   pip install fastapi uvicorn
+   ```
+
+3. **Start API gateway**
+   ```bash
+   python api_gateway.py
+   ```
+   Server runs on `http://localhost:12000`
+
+### Android Setup
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Vivek8968/allhandvivekandroid.git
+   cd allhandvivekandroid
+   ```
+
+2. **Open in Android Studio**
    - Open Android Studio
    - Select "Open an existing project"
-   - Navigate to the project directory
+   - Navigate to the cloned directory
 
-3. **Configure Firebase (Optional):**
-   - Replace `google-services.json` with your Firebase configuration
-   - Update Firebase project settings in the file
+3. **Configure API Connection**
+   - Edit `app/src/main/java/com/hyperlocal/marketplace/config/Config.kt`
+   - For emulator: `BASE_URL = "http://10.0.2.2:12000"`
+   - For device: `BASE_URL = "http://YOUR_IP:12000"`
 
-4. **Build the project:**
+4. **Build and Run**
    ```bash
    ./gradlew assembleDebug
    ```
 
-5. **Install on device:**
-   ```bash
-   ./gradlew installDebug
-   ```
+## 🌐 Backend Integration
 
-## ⚙️ Configuration
-
-### Backend Configuration
-
-Update the backend service URLs in `Config.kt`:
-
+### API Configuration
 ```kotlin
 object Config {
-    // Backend Service URLs - Update these for production
-    val USER_SERVICE_URL = "http://10.0.2.2:8001"
-    val SELLER_SERVICE_URL = "http://10.0.2.2:8002"
-    val CUSTOMER_SERVICE_URL = "http://10.0.2.2:8003"
-    val CATALOG_SERVICE_URL = "http://10.0.2.2:8004"
-    val ADMIN_SERVICE_URL = "http://10.0.2.2:8005"
+    // Backend API Configuration
+    const val BASE_URL = "http://10.0.2.2:12000"  // For emulator
+    // const val BASE_URL = "http://192.168.1.100:12000"  // For physical device
     
-    // App Configuration
-    val IS_DEBUG_MODE = true  // Set to false for production
-    val ENABLE_DEMO_DATA = true  // Set to false to use real backend
+    // Feature Toggles
+    const val IS_DEMO_MODE = false  // Now uses real backend
+    const val ENABLE_LOCATION_SERVICES = true
+    const val ENABLE_FIREBASE_AUTH = true
 }
 ```
 
-### Environment Switching
+### Integrated Endpoints
+- **Authentication**: `/auth/login`, `/auth/register`, `/auth/verify-otp`
+- **Shops**: `/shops`, `/shops/{id}`, `/shops/{id}/products`
+- **Catalog**: `/catalog`, `/catalog/categories`, `/products/{id}`
+- **Vendor**: `/vendor/shop`, `/vendor/products`
+- **Admin**: `/admin/users`, `/admin/shops`, `/admin/stats`
 
-#### For Development (Android Emulator):
-- Use `10.0.2.2` as the host (maps to localhost on development machine)
-- Keep `IS_DEBUG_MODE = true`
-- Keep `ENABLE_DEMO_DATA = true` for testing without backend
-
-#### For Production:
-1. Update service URLs to production endpoints:
-   ```kotlin
-   val USER_SERVICE_URL = "https://your-production-api.com/user"
-   val SELLER_SERVICE_URL = "https://your-production-api.com/seller"
-   // ... update all service URLs
-   ```
-
-2. Disable debug mode:
-   ```kotlin
-   val IS_DEBUG_MODE = false
-   val ENABLE_DEMO_DATA = false
-   ```
-
-3. Update Firebase configuration with production keys
-
-## 🧪 Testing Instructions
-
-### Demo Mode Testing
-The app includes comprehensive demo data for testing without a backend:
-
-1. **Enable Demo Mode:**
-   - Set `ENABLE_DEMO_DATA = true` in `Config.kt`
-   - Launch the app
-
-2. **Test Customer Flow:**
-   - Select "Customer" role
-   - Browse demo shops and products
-   - Test search functionality
-   - View shop details
-
-3. **Test Seller Flow:**
-   - Select "Seller" role
-   - View demo shop dashboard
-   - Browse inventory management
-   - Test product addition flow
-
-4. **Test Admin Flow:**
-   - Select "Admin" role
-   - View analytics dashboard
-   - Browse pending shop approvals
-   - Test approval/rejection flow
-
-### Backend Integration Testing
-
-1. **Start Backend Services:**
-   ```bash
-   # Clone and start the backend
-   git clone https://github.com/Vivek8968/hyperlocalbymanus.git
-   cd hyperlocalbymanus
-   # Follow backend setup instructions
-   ```
-
-2. **Configure App for Backend:**
-   - Set `ENABLE_DEMO_DATA = false` in `Config.kt`
-   - Ensure backend URLs are correct
-   - Test API connectivity
-
-3. **Test API Flows:**
-   - User registration and authentication
-   - Shop creation and management
-   - Product catalog operations
-   - Admin operations
-
-## 📂 Project Structure
-
-```
-app/src/main/java/com/hyperlocal/marketplace/
-├── config/
-│   └── Config.kt                 # App configuration
-├── data/
-│   ├── api/                      # API service interfaces
-│   ├── models/                   # Data models
-│   └── repository/               # Repository implementations
-├── di/
-│   └── NetworkModule.kt          # Dependency injection
-├── presentation/
-│   ├── admin/                    # Admin UI and ViewModels
-│   ├── auth/                     # Authentication UI
-│   ├── customer/                 # Customer UI and ViewModels
-│   ├── seller/                   # Seller UI and ViewModels
-│   └── MainActivity.kt           # Main activity
-├── ui/
-│   └── theme/                    # Material 3 theme
-└── utils/                        # Utility classes
+### API Response Format
+```json
+{
+  "status": true,
+  "message": "Success",
+  "data": { ... }
+}
 ```
 
-## 🔑 API Integration
+## 📱 Building APK
 
-The app integrates with 5 microservices:
+### Quick Build
+```bash
+./gradlew assembleDebug
+```
+APK location: `app/build/outputs/apk/debug/app-debug.apk` (19MB)
 
-1. **User Service** (Port 8001) - Authentication and user management
-2. **Seller Service** (Port 8002) - Seller operations and shop management
-3. **Customer Service** (Port 8003) - Customer operations and orders
-4. **Catalog Service** (Port 8004) - Product catalog and inventory
-5. **Admin Service** (Port 8005) - Admin operations and analytics
+### Automated Build
+```bash
+chmod +x build.sh
+./build.sh
+```
 
-### API Endpoints Used:
+## 🧪 Testing Backend Integration
 
-#### User Service
-- `POST /api/users/register` - User registration
-- `POST /api/users/login` - User authentication
-- `GET /api/users/profile` - Get user profile
+The app includes `TestBackendActivity` that automatically tests:
 
-#### Seller Service
-- `POST /api/sellers/register` - Seller registration
-- `GET /api/sellers/shops` - Get seller shops
-- `POST /api/sellers/shops` - Create new shop
+1. **Login Endpoint**: Phone-based authentication
+2. **Shops Endpoint**: Retrieves shop data
+3. **Catalog Endpoint**: Fetches product catalog
 
-#### Customer Service
-- `GET /api/customers/nearby-shops` - Get nearby shops
-- `POST /api/customers/orders` - Place order
+### Test Results Display
+- ✅ Login successful: User Name
+- ✅ Shops loaded: X shops found  
+- ✅ Catalog loaded: Y items found
 
-#### Catalog Service
-- `GET /api/catalog/products` - Get products
-- `POST /api/catalog/products` - Add product
-- `GET /api/catalog/categories` - Get categories
+### Running Integration Test
+1. Install APK on device/emulator
+2. Launch "Backend Test" activity
+3. View real-time test results
 
-#### Admin Service
-- `GET /api/admin/stats` - Get admin statistics
-- `GET /api/admin/pending-shops` - Get pending shop approvals
-- `PUT /api/admin/shops/{id}/approve` - Approve shop
+## 🔐 Authentication Flow
+
+### Current Implementation
+- Phone-based login via `/auth/login`
+- Returns user data and JWT token
+- Token used for authenticated requests
+
+### Planned Firebase Integration
+- OTP verification
+- Google Sign-In
+- Role-based access control
+
+## 📍 Location Services
+
+### Shop Discovery
+- Location-based shop filtering
+- Distance calculation and display
+- GPS integration for nearby shops
+
+### Implementation
+```kotlin
+suspend fun getAllShops(
+    latitude: Double? = null,
+    longitude: Double? = null
+): Flow<Resource<List<Shop>>>
+```
+
+## 🎨 UI Components
+
+### Current Status
+- **Theme System**: Material 3 with dark/light themes
+- **Test Interface**: Simple backend connectivity testing
+- **Core Components**: Ready for full UI integration
+
+### Planned Features
+- Customer shop browsing interface
+- Seller dashboard for inventory management
+- Admin panel for approvals and analytics
 
 ## 🚀 Deployment
 
-### Debug APK
-The debug APK is generated at: `app/build/outputs/apk/debug/app-debug.apk`
+### Development Environment
+1. Start backend: `python api_gateway.py`
+2. Build Android: `./gradlew assembleDebug`
+3. Install APK: `adb install app-debug.apk`
 
-### Release Build
-1. Configure signing in `app/build.gradle`
-2. Build release APK:
-   ```bash
-   ./gradlew assembleRelease
-   ```
+### Production Checklist
+- [ ] Update API URLs to production
+- [ ] Enable HTTPS and remove cleartext traffic
+- [ ] Configure Firebase for production
+- [ ] Set up proper authentication
+- [ ] Enable location services
+- [ ] Complete UI integration
 
-## 🔒 Security Notes
+## 📊 Current Capabilities
 
-- Firebase authentication is configured but requires proper setup
-- API calls include basic error handling and retry mechanisms
-- User tokens are stored securely using Android's encrypted preferences
-- Network security config is enabled for HTTPS enforcement
+### ✅ Working Features
+- Backend API connectivity
+- Data model synchronization
+- Network error handling
+- APK generation and installation
+- Integration testing framework
 
-## 🐛 Troubleshooting
+### 🔄 In Development
+- Complete UI implementation
+- Firebase authentication
+- Location-based filtering
+- Image upload functionality
+- Real-time order management
 
-### Common Issues:
+## 🐛 Known Issues
 
-1. **Build Errors:**
-   - Ensure JDK 17 is installed and configured
-   - Clean and rebuild: `./gradlew clean assembleDebug`
+1. **UI Components**: Temporarily simplified for backend integration
+2. **Authentication**: Firebase integration pending
+3. **Location**: GPS services not yet implemented
+4. **Images**: Upload functionality in development
 
-2. **Network Issues:**
-   - Check backend service URLs in `Config.kt`
-   - Verify emulator can reach localhost (use 10.0.2.2)
-   - Enable demo mode for offline testing
+## 📚 Documentation
 
-3. **Firebase Issues:**
-   - Verify `google-services.json` is properly configured
-   - Check Firebase project settings
+### Key Documents
+- [Backend Integration Guide](BACKEND_INTEGRATION.md) - Detailed integration docs
+- [Deployment Guide](DEPLOYMENT.md) - Production deployment
+- [Testing Guide](test_app.md) - Testing procedures
+- [Project Summary](PROJECT_SUMMARY.md) - Complete overview
 
-## 📋 TODO / Future Enhancements
+### API Documentation
+- Endpoint specifications
+- Request/response formats
+- Authentication requirements
+- Error handling patterns
 
-- [ ] Implement Firebase Authentication integration
-- [ ] Add Google Maps integration for location services
-- [ ] Implement image upload with camera/gallery
-- [ ] Add real-time location tracking
-- [ ] Implement push notifications
-- [ ] Add offline caching with Room database
-- [ ] Create comprehensive unit and integration tests
-- [ ] Add performance monitoring and analytics
-- [ ] Implement WhatsApp integration for shop communication
+## 🔧 Configuration
 
-## 📄 License
+### Environment Files
+- `Config.kt`: Main API configuration
+- `strings.xml`: API keys and resources
+- `AndroidManifest.xml`: Permissions and activities
 
-This project is part of a hyperlocal marketplace solution. Please refer to the main repository for licensing information.
+### Network Configuration
+```xml
+<!-- Allow HTTP traffic for development -->
+<application android:usesCleartextTraffic="true">
+```
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+### Development Workflow
+1. Ensure backend is running
+2. Test API connectivity
+3. Make Android changes
+4. Verify integration
+5. Build and test APK
+
+### Code Standards
+- Follow Kotlin conventions
+- Use repository pattern
+- Handle network errors properly
+- Document API integrations
 
 ## 📞 Support
 
-For issues and questions:
-- Check the troubleshooting section
-- Review the backend repository: https://github.com/Vivek8968/hyperlocalbymanus.git
-- Create an issue in the repository
+### Troubleshooting
+1. **Backend Issues**: Check API gateway logs
+2. **Network Issues**: Verify IP configuration
+3. **Build Issues**: Clean and rebuild project
+4. **APK Issues**: Check device compatibility
+
+### Getting Help
+- Review integration documentation
+- Check backend API status
+- Verify network connectivity
+- Test with provided test activity
+
+## 🔗 Links
+
+- [Android Repository](https://github.com/Vivek8968/allhandvivekandroid)
+- [Backend Repository](https://github.com/Vivek8968/hyperlocalbymanus)
+- [API Gateway Documentation](BACKEND_INTEGRATION.md)
 
 ---
 
-**Built with ❤️ using Kotlin and Jetpack Compose**
+**Note**: This project demonstrates successful backend integration with a working Android APK. The foundation is complete for building the full marketplace application.

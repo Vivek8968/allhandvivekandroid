@@ -19,54 +19,54 @@ object Config {
     // Environment toggle - set to false for production
     const val IS_DEBUG = true
     
-    // Base URLs for backend services
-    // TODO: Replace with your actual server URLs
-    private const val DEBUG_BASE_URL = "http://10.0.2.2" // Android emulator localhost
-    private const val PRODUCTION_BASE_URL = "https://your-production-domain.com" // Production URL
+    // Base URLs for backend services - NOW CONNECTED TO REAL API GATEWAY!
+    private const val DEBUG_BASE_URL = "http://10.0.2.2:12000"  // Android emulator localhost
+    private const val PRODUCTION_BASE_URL = "https://work-1-ixmfiiyxxapapnvk.prod-runtime.all-hands.dev:12000"
     
     val BASE_URL = if (IS_DEBUG) DEBUG_BASE_URL else PRODUCTION_BASE_URL
     
-    // Service URLs
-    val USER_SERVICE_URL = "$BASE_URL:8001/"
-    val SELLER_SERVICE_URL = "$BASE_URL:8002/"
-    val CUSTOMER_SERVICE_URL = "$BASE_URL:8003/"
-    val CATALOG_SERVICE_URL = "$BASE_URL:8004/"
-    val ADMIN_SERVICE_URL = "$BASE_URL:8005/"
+    // Service URLs - All routed through API Gateway
+    val USER_SERVICE_URL = "$BASE_URL/"
+    val SELLER_SERVICE_URL = "$BASE_URL/"
+    val CUSTOMER_SERVICE_URL = "$BASE_URL/"
+    val CATALOG_SERVICE_URL = "$BASE_URL/"
+    val ADMIN_SERVICE_URL = "$BASE_URL/"
     
-    // API Endpoints
+    // API Endpoints - Updated to match API Gateway routes
     object Endpoints {
-        // User Service
+        // User/Auth Service
         const val REGISTER = "auth/register"
         const val LOGIN = "auth/login"
         const val VERIFY_TOKEN = "auth/verify-token"
-        const val REFRESH_TOKEN = "auth/refresh-token"
+        const val GET_USER_PROFILE = "users/me"
+        const val UPDATE_USER_PROFILE = "users/me"
         
-        // Seller Service
+        // Seller/Vendor Service
+        const val GET_VENDOR_SHOP = "vendor/shop"
+        const val CREATE_VENDOR_SHOP = "vendor/shop"
+        const val UPDATE_VENDOR_SHOP = "vendor/shop"
+        const val GET_VENDOR_PRODUCTS = "vendor/products"
+        const val ADD_PRODUCT_FROM_CATALOG = "vendor/products/add-from-catalog"
+        
+        // Customer/Shop Service
+        const val GET_ALL_SHOPS = "shops"
+        const val GET_SHOP_BY_ID = "shops/{id}"
+        const val GET_SHOP_PRODUCTS = "shops/{id}/products"
         const val CREATE_SHOP = "shops"
-        const val GET_MY_SHOP = "shops/me"
-        const val UPDATE_SHOP = "shops/me"
-        const val ADD_PRODUCT = "shops/me/products"
-        const val GET_MY_PRODUCTS = "shops/me/products"
-        const val UPDATE_PRODUCT = "shops/me/products/{id}"
-        const val DELETE_PRODUCT = "shops/me/products/{id}"
-        const val UPLOAD_IMAGE = "shops/me/images/upload"
-        
-        // Customer Service
-        const val NEARBY_SHOPS = "shops/nearby"
-        const val SHOP_DETAILS = "shops/{id}"
-        const val SHOP_PRODUCTS = "shops/{id}/products"
-        const val SEARCH_SHOPS = "shops/search"
+        const val UPDATE_SHOP = "shops/{id}"
+        const val ADD_PRODUCT_TO_SHOP = "shops/{id}/products"
+        const val UPDATE_SHOP_PRODUCT = "shops/{shop_id}/products/{product_id}"
+        const val DELETE_SHOP_PRODUCT = "shops/{shop_id}/products/{product_id}"
         
         // Catalog Service
-        const val CATALOG = "catalog"
-        const val CATALOG_SEARCH = "catalog/search"
-        const val CATALOG_ITEM = "catalog/{id}"
+        const val GET_CATALOG = "catalog"
+        const val GET_CATALOG_CATEGORIES = "catalog/categories"
+        const val GET_PRODUCT_BY_ID = "products/{id}"
         
-        // Admin Service
+        // Admin Service (placeholder - not implemented in gateway yet)
+        const val ADMIN_STATS = "admin/stats"
         const val ADMIN_USERS = "admin/users"
         const val ADMIN_SHOPS = "admin/shops"
-        const val ADMIN_LOGS = "admin/logs"
-        const val ADMIN_STATS = "admin/stats"
     }
     
     // Firebase Configuration

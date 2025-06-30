@@ -7,26 +7,17 @@ import retrofit2.http.*
 
 interface CatalogApiService {
     
-    @GET(Config.Endpoints.CATALOG)
+    @GET(Config.Endpoints.GET_CATALOG)
     suspend fun getCatalog(
-        @Header("Authorization") token: String,
-        @Query("page") page: Int = 1,
-        @Query("page_size") pageSize: Int = 20,
+        @Query("search") search: String? = null,
         @Query("category") category: String? = null
-    ): Response<CatalogSearchResponse>
+    ): Response<ApiResponse<List<CatalogItem>>>
     
-    @GET(Config.Endpoints.CATALOG_SEARCH)
-    suspend fun searchCatalog(
-        @Header("Authorization") token: String,
-        @Query("query") query: String,
-        @Query("category") category: String? = null,
-        @Query("page") page: Int = 1,
-        @Query("page_size") pageSize: Int = 20
-    ): Response<CatalogSearchResponse>
+    @GET(Config.Endpoints.GET_CATALOG_CATEGORIES)
+    suspend fun getCatalogCategories(): Response<ApiResponse<List<String>>>
     
-    @GET(Config.Endpoints.CATALOG_ITEM)
-    suspend fun getCatalogItem(
-        @Header("Authorization") token: String,
-        @Path("id") itemId: Int
-    ): Response<CatalogItem>
+    @GET(Config.Endpoints.GET_PRODUCT_BY_ID)
+    suspend fun getProductById(
+        @Path("id") productId: String
+    ): Response<ApiResponse<Product>>
 }

@@ -13,38 +13,40 @@ class CustomerRepository @Inject constructor(
     private val customerApiService: CustomerApiService
 ) {
     
-    suspend fun getNearbyShops(
-        token: String,
-        latitude: Double,
-        longitude: Double,
-        radius: Double = 10.0,
-        page: Int = 1,
-        pageSize: Int = 20
-    ): Flow<Resource<ShopSearchResponse>> = flow {
+    suspend fun getAllShops(
+        latitude: Double? = null,
+        longitude: Double? = null
+    ): Flow<Resource<List<Shop>>> = flow {
         try {
             emit(Resource.Loading())
-            val response = customerApiService.getNearbyShops(
-                "Bearer $token", latitude, longitude, radius, page, pageSize
-            )
+            val response = customerApiService.getAllShops(latitude, longitude)
             if (response.isSuccessful) {
-                response.body()?.let { shopResponse ->
-                    emit(Resource.Success(shopResponse))
+                response.body()?.let { apiResponse ->
+                    if (apiResponse.status && apiResponse.data != null) {
+                        emit(Resource.Success(apiResponse.data))
+                    } else {
+                        emit(Resource.Error(apiResponse.message))
+                    }
                 } ?: emit(Resource.Error("Empty response body"))
             } else {
-                emit(Resource.Error("Failed to get nearby shops: ${response.message()}"))
+                emit(Resource.Error("Failed to get shops: ${response.message()}"))
             }
         } catch (e: Exception) {
             emit(Resource.Error("Network error: ${e.localizedMessage}"))
         }
     }
     
-    suspend fun getShopDetails(token: String, shopId: Int): Flow<Resource<Shop>> = flow {
+    suspend fun getShopById(shopId: String): Flow<Resource<Shop>> = flow {
         try {
             emit(Resource.Loading())
-            val response = customerApiService.getShopDetails("Bearer $token", shopId)
+            val response = customerApiService.getShopById(shopId)
             if (response.isSuccessful) {
-                response.body()?.let { shop ->
-                    emit(Resource.Success(shop))
+                response.body()?.let { apiResponse ->
+                    if (apiResponse.status && apiResponse.data != null) {
+                        emit(Resource.Success(apiResponse.data))
+                    } else {
+                        emit(Resource.Error(apiResponse.message))
+                    }
                 } ?: emit(Resource.Error("Empty response body"))
             } else {
                 emit(Resource.Error("Failed to get shop details: ${response.message()}"))
@@ -55,46 +57,24 @@ class CustomerRepository @Inject constructor(
     }
     
     suspend fun getShopProducts(
-        token: String,
-        shopId: Int,
-        page: Int = 1,
-        pageSize: Int = 20
-    ): Flow<Resource<ShopProductsResponse>> = flow {
+        shopId: String,
+        search: String? = null,
+        category: String? = null,
+        sort: String? = null
+    ): Flow<Resource<List<Product>>> = flow {
         try {
             emit(Resource.Loading())
-            val response = customerApiService.getShopProducts("Bearer $token", shopId, page, pageSize)
+            val response = customerApiService.getShopProducts(shopId, search, category, sort)
             if (response.isSuccessful) {
-                response.body()?.let { productsResponse ->
-                    emit(Resource.Success(productsResponse))
+                response.body()?.let { apiResponse ->
+                    if (apiResponse.status && apiResponse.data != null) {
+                        emit(Resource.Success(apiResponse.data))
+                    } else {
+                        emit(Resource.Error(apiResponse.message))
+                    }
                 } ?: emit(Resource.Error("Empty response body"))
             } else {
                 emit(Resource.Error("Failed to get shop products: ${response.message()}"))
-            }
-        } catch (e: Exception) {
-            emit(Resource.Error("Network error: ${e.localizedMessage}"))
-        }
-    }
-    
-    suspend fun searchShops(
-        token: String,
-        query: String,
-        latitude: Double? = null,
-        longitude: Double? = null,
-        radius: Double = 10.0,
-        page: Int = 1,
-        pageSize: Int = 20
-    ): Flow<Resource<ShopSearchResponse>> = flow {
-        try {
-            emit(Resource.Loading())
-            val response = customerApiService.searchShops(
-                "Bearer $token", query, latitude, longitude, radius, page, pageSize
-            )
-            if (response.isSuccessful) {
-                response.body()?.let { shopResponse ->
-                    emit(Resource.Success(shopResponse))
-                } ?: emit(Resource.Error("Empty response body"))
-            } else {
-                emit(Resource.Error("Search failed: ${response.message()}"))
             }
         } catch (e: Exception) {
             emit(Resource.Error("Network error: ${e.localizedMessage}"))

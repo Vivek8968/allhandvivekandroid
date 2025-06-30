@@ -13,13 +13,17 @@ class UserRepository @Inject constructor(
     private val userApiService: UserApiService
 ) {
     
-    suspend fun registerUser(request: UserCreateRequest): Flow<Resource<User>> = flow {
+    suspend fun registerUser(request: RegisterRequest): Flow<Resource<User>> = flow {
         try {
             emit(Resource.Loading())
             val response = userApiService.registerUser(request)
             if (response.isSuccessful) {
-                response.body()?.let { user ->
-                    emit(Resource.Success(user))
+                response.body()?.let { apiResponse ->
+                    if (apiResponse.status && apiResponse.data != null) {
+                        emit(Resource.Success(apiResponse.data))
+                    } else {
+                        emit(Resource.Error(apiResponse.message))
+                    }
                 } ?: emit(Resource.Error("Empty response body"))
             } else {
                 emit(Resource.Error("Registration failed: ${response.message()}"))
@@ -29,13 +33,17 @@ class UserRepository @Inject constructor(
         }
     }
     
-    suspend fun loginUser(request: FirebaseAuthRequest): Flow<Resource<TokenResponse>> = flow {
+    suspend fun loginUser(request: LoginRequest): Flow<Resource<LoginResponseData>> = flow {
         try {
             emit(Resource.Loading())
             val response = userApiService.loginUser(request)
             if (response.isSuccessful) {
-                response.body()?.let { tokenResponse ->
-                    emit(Resource.Success(tokenResponse))
+                response.body()?.let { apiResponse ->
+                    if (apiResponse.status && apiResponse.data != null) {
+                        emit(Resource.Success(apiResponse.data))
+                    } else {
+                        emit(Resource.Error(apiResponse.message))
+                    }
                 } ?: emit(Resource.Error("Empty response body"))
             } else {
                 emit(Resource.Error("Login failed: ${response.message()}"))
@@ -45,13 +53,17 @@ class UserRepository @Inject constructor(
         }
     }
     
-    suspend fun verifyToken(token: String): Flow<Resource<Map<String, Any>>> = flow {
+    suspend fun verifyToken(token: String): Flow<Resource<User>> = flow {
         try {
             emit(Resource.Loading())
             val response = userApiService.verifyToken("Bearer $token")
             if (response.isSuccessful) {
-                response.body()?.let { result ->
-                    emit(Resource.Success(result))
+                response.body()?.let { apiResponse ->
+                    if (apiResponse.status && apiResponse.data != null) {
+                        emit(Resource.Success(apiResponse.data))
+                    } else {
+                        emit(Resource.Error(apiResponse.message))
+                    }
                 } ?: emit(Resource.Error("Empty response body"))
             } else {
                 emit(Resource.Error("Token verification failed: ${response.message()}"))
@@ -61,16 +73,20 @@ class UserRepository @Inject constructor(
         }
     }
     
-    suspend fun refreshToken(token: String): Flow<Resource<TokenResponse>> = flow {
+    suspend fun getUserProfile(token: String): Flow<Resource<User>> = flow {
         try {
             emit(Resource.Loading())
-            val response = userApiService.refreshToken("Bearer $token")
+            val response = userApiService.getUserProfile("Bearer $token")
             if (response.isSuccessful) {
-                response.body()?.let { tokenResponse ->
-                    emit(Resource.Success(tokenResponse))
+                response.body()?.let { apiResponse ->
+                    if (apiResponse.status && apiResponse.data != null) {
+                        emit(Resource.Success(apiResponse.data))
+                    } else {
+                        emit(Resource.Error(apiResponse.message))
+                    }
                 } ?: emit(Resource.Error("Empty response body"))
             } else {
-                emit(Resource.Error("Token refresh failed: ${response.message()}"))
+                emit(Resource.Error("Failed to get user profile: ${response.message()}"))
             }
         } catch (e: Exception) {
             emit(Resource.Error("Network error: ${e.localizedMessage}"))
