@@ -89,7 +89,7 @@ fun HomeScreen(navController: NavController) {
             actions = {
                 // Login Button
                 TextButton(
-                    onClick = { /* Handle login */ },
+                    onClick = { navController.navigate("login") },
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = MaterialTheme.colorScheme.primary
                     )
@@ -188,7 +188,7 @@ fun CategoryCard(category: String) {
         modifier = Modifier
             .width(120.dp)
             .height(80.dp)
-            .clickable { /* Handle category click */ },
+            .clickable { navController.navigate("categories") },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = CardBackground
@@ -237,7 +237,7 @@ fun ShopCard(shop: Shop) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Handle shop click */ },
+            .clickable { navController.navigate("shops") },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = CardBackground

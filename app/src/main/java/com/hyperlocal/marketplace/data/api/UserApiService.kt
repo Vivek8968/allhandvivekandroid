@@ -32,4 +32,9 @@ interface UserApiService {
         @Header("Authorization") token: String,
         @Body request: Map<String, Any>
     ): Response<ApiResponse<User>>
+    
+    @POST(Config.Endpoints.LOGIN)
+    suspend fun loginWithFirebaseToken(
+        @Body request: FirebaseAuthRequest
+    ): Response<ApiResponse<LoginResponseData>>
 }

@@ -2,9 +2,7 @@ package com.hyperlocal.marketplace.data.repository
 
 import com.hyperlocal.marketplace.data.api.SellerApiService
 import com.hyperlocal.marketplace.data.models.*
-import com.hyperlocal.marketplace.utils.Resource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,103 +11,35 @@ class SellerRepository @Inject constructor(
     private val sellerApiService: SellerApiService
 ) {
     
-    suspend fun createShop(request: ShopCreateRequest): Flow<Resource<Shop>> = flow {
-        try {
-            emit(Resource.Loading())
-            val response = sellerApiService.createShop(request)
-            if (response.isSuccessful) {
-                response.body()?.let { apiResponse ->
-                    if (apiResponse.status && apiResponse.data != null) {
-                        emit(Resource.Success(apiResponse.data))
-                    } else {
-                        emit(Resource.Error(apiResponse.message))
-                    }
-                } ?: emit(Resource.Error("Empty response body"))
-            } else {
-                emit(Resource.Error("Shop creation failed: ${response.message()}"))
-            }
-        } catch (e: Exception) {
-            emit(Resource.Error("Network error: ${e.localizedMessage}"))
-        }
+    suspend fun getSellerShop(token: String): Response<ApiResponse<Shop>> {
+        return sellerApiService.getVendorShop(token)
     }
     
-    suspend fun getVendorShop(): Flow<Resource<Shop>> = flow {
-        try {
-            emit(Resource.Loading())
-            val response = sellerApiService.getVendorShop()
-            if (response.isSuccessful) {
-                response.body()?.let { apiResponse ->
-                    if (apiResponse.status && apiResponse.data != null) {
-                        emit(Resource.Success(apiResponse.data))
-                    } else {
-                        emit(Resource.Error(apiResponse.message))
-                    }
-                } ?: emit(Resource.Error("Empty response body"))
-            } else {
-                emit(Resource.Error("Failed to get shop: ${response.message()}"))
-            }
-        } catch (e: Exception) {
-            emit(Resource.Error("Network error: ${e.localizedMessage}"))
-        }
+    suspend fun createShop(token: String, request: ShopCreateRequest): Response<ApiResponse<Shop>> {
+        return sellerApiService.createVendorShop(token, request)
     }
     
-    suspend fun getVendorProducts(): Flow<Resource<List<Product>>> = flow {
-        try {
-            emit(Resource.Loading())
-            val response = sellerApiService.getVendorProducts()
-            if (response.isSuccessful) {
-                response.body()?.let { apiResponse ->
-                    if (apiResponse.status && apiResponse.data != null) {
-                        emit(Resource.Success(apiResponse.data))
-                    } else {
-                        emit(Resource.Error(apiResponse.message))
-                    }
-                } ?: emit(Resource.Error("Empty response body"))
-            } else {
-                emit(Resource.Error("Failed to get products: ${response.message()}"))
-            }
-        } catch (e: Exception) {
-            emit(Resource.Error("Network error: ${e.localizedMessage}"))
-        }
+    suspend fun updateShop(token: String, request: ShopUpdateRequest): Response<ApiResponse<Shop>> {
+        return sellerApiService.updateVendorShop(token, request)
     }
     
-    suspend fun addProductFromCatalog(request: AddProductFromCatalogRequest): Flow<Resource<Product>> = flow {
-        try {
-            emit(Resource.Loading())
-            val response = sellerApiService.addProductFromCatalog(request)
-            if (response.isSuccessful) {
-                response.body()?.let { apiResponse ->
-                    if (apiResponse.status && apiResponse.data != null) {
-                        emit(Resource.Success(apiResponse.data))
-                    } else {
-                        emit(Resource.Error(apiResponse.message))
-                    }
-                } ?: emit(Resource.Error("Empty response body"))
-            } else {
-                emit(Resource.Error("Product addition failed: ${response.message()}"))
-            }
-        } catch (e: Exception) {
-            emit(Resource.Error("Network error: ${e.localizedMessage}"))
-        }
+    suspend fun getSellerProducts(token: String): Response<ApiResponse<List<Product>>> {
+        return sellerApiService.getVendorProducts(token)
     }
     
-    suspend fun addProductToShop(shopId: String, request: ProductCreateRequest): Flow<Resource<Product>> = flow {
-        try {
-            emit(Resource.Loading())
-            val response = sellerApiService.addProductToShop(shopId, request)
-            if (response.isSuccessful) {
-                response.body()?.let { apiResponse ->
-                    if (apiResponse.status && apiResponse.data != null) {
-                        emit(Resource.Success(apiResponse.data))
-                    } else {
-                        emit(Resource.Error(apiResponse.message))
-                    }
-                } ?: emit(Resource.Error("Empty response body"))
-            } else {
-                emit(Resource.Error("Product addition failed: ${response.message()}"))
-            }
-        } catch (e: Exception) {
-            emit(Resource.Error("Network error: ${e.localizedMessage}"))
-        }
+    suspend fun addProduct(token: String, shopId: String, request: ProductCreateRequest): Response<ApiResponse<Product>> {
+        return sellerApiService.addProductToShop(token, shopId, request)
+    }
+    
+    suspend fun updateProduct(token: String, shopId: String, productId: String, request: Map<String, Any>): Response<ApiResponse<Product>> {
+        return sellerApiService.updateShopProduct(token, shopId, productId, request)
+    }
+    
+    suspend fun deleteProduct(token: String, shopId: String, productId: String): Response<ApiResponse<Any>> {
+        return sellerApiService.deleteShopProduct(token, shopId, productId)
+    }
+    
+    suspend fun addProductFromCatalog(token: String, request: AddProductFromCatalogRequest): Response<ApiResponse<Product>> {
+        return sellerApiService.addProductFromCatalog(token, request)
     }
 }

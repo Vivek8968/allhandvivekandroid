@@ -3,31 +3,72 @@ package com.hyperlocal.marketplace.presentation.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.hyperlocal.marketplace.presentation.screens.home.HomeScreen
+import com.hyperlocal.marketplace.data.models.UserRole
+import com.hyperlocal.marketplace.presentation.screens.admin.AdminDashboardScreen
+import com.hyperlocal.marketplace.presentation.screens.auth.AuthViewModel
+import com.hyperlocal.marketplace.presentation.screens.auth.LoginScreen
+import com.hyperlocal.marketplace.presentation.screens.auth.RegisterScreen
+import com.hyperlocal.marketplace.presentation.screens.auth.RoleSelectionScreen
 import com.hyperlocal.marketplace.presentation.screens.categories.CategoriesScreen
-import com.hyperlocal.marketplace.presentation.screens.shops.ShopsNearMeScreen
+import com.hyperlocal.marketplace.presentation.screens.help.HelpScreen
+import com.hyperlocal.marketplace.presentation.screens.home.HomeScreen
 import com.hyperlocal.marketplace.presentation.screens.products.ProductsScreen
 import com.hyperlocal.marketplace.presentation.screens.profile.ProfileScreen
-import com.hyperlocal.marketplace.presentation.screens.help.HelpScreen
+import com.hyperlocal.marketplace.presentation.screens.seller.SellerDashboardScreen
+import com.hyperlocal.marketplace.presentation.screens.shops.ShopsNearMeScreen
 
 @Composable
-fun HyperlocalApp() {
+fun HyperlocalApp(
+    authViewModel: AuthViewModel = hiltViewModel()
+) {
     val navController = rememberNavController()
+    val uiState by authViewModel.uiState.collectAsState()
+    
+    // Determine start destination based on login status
+    val startDestination = if (uiState.isLoggedIn) {
+        when (uiState.userRole) {
+            "CUSTOMER" -> "home"
+            "SELLER" -> "seller_dashboard"
+            "ADMIN" -> "admin_dashboard"
+            else -> "login"
+        }
+    } else {
+        "login"
+    }
     
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(navController = navController)
+            // Only show bottom navigation for customer role
+            if (uiState.isLoggedIn && uiState.userRole == "CUSTOMER") {
+                BottomNavigationBar(navController = navController)
+            }
         }
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "home",
+            startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         ) {
+            // Auth screens
+            composable("login") {
+                LoginScreen(navController = navController)
+            }
+            composable("register") {
+                RegisterScreen(navController = navController)
+            }
+            composable("role_selection") {
+                RoleSelectionScreen(navController = navController)
+            }
+            
+            // Customer screens
             composable("home") {
                 HomeScreen(navController = navController)
             }
@@ -45,6 +86,36 @@ fun HyperlocalApp() {
             }
             composable("help") {
                 HelpScreen(navController = navController)
+            }
+            
+            // Seller screens
+            composable("seller_dashboard") {
+                SellerDashboardScreen(navController = navController)
+            }
+            composable("seller_add_product") {
+                // TODO: Implement AddProductScreen
+                SellerDashboardScreen(navController = navController)
+            }
+            composable("seller_edit_product/{productId}") {
+                // TODO: Implement EditProductScreen
+                SellerDashboardScreen(navController = navController)
+            }
+            composable("seller_edit_shop") {
+                // TODO: Implement EditShopScreen
+                SellerDashboardScreen(navController = navController)
+            }
+            composable("seller_orders") {
+                // TODO: Implement OrdersScreen
+                SellerDashboardScreen(navController = navController)
+            }
+            
+            // Admin screens
+            composable("admin_dashboard") {
+                AdminDashboardScreen(navController = navController)
+            }
+            composable("admin_user_details/{userId}") {
+                // TODO: Implement UserDetailsScreen
+                AdminDashboardScreen(navController = navController)
             }
         }
     }

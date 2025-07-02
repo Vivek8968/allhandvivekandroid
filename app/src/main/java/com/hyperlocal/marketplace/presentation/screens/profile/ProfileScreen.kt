@@ -9,16 +9,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.hyperlocal.marketplace.data.models.UserRole
+import com.hyperlocal.marketplace.presentation.screens.auth.AuthViewModel
 import com.hyperlocal.marketplace.presentation.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(navController: NavController) {
+fun ProfileScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel = hiltViewModel()
+) {
+    val uiState by authViewModel.uiState.collectAsState()
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,57 +76,127 @@ fun ProfileScreen(navController: NavController) {
                             tint = Gray400
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Guest User",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = "Please login to access your profile",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Gray600
-                        )
+                        
+                        if (uiState.isLoggedIn) {
+                            Text(
+                                text = uiState.userName ?: "User",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Role: ${uiState.userRole ?: "Customer"}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Gray600
+                            )
+                        } else {
+                            Text(
+                                text = "Guest User",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Please login to access your profile",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Gray600
+                            )
+                        }
                     }
                 }
             }
             
-            item {
-                ProfileMenuItem(
-                    icon = Icons.Default.Login,
-                    title = "Login / Register",
-                    onClick = { /* Handle login */ }
-                )
+            if (!uiState.isLoggedIn) {
+                item {
+                    ProfileMenuItem(
+                        icon = Icons.Default.Login,
+                        title = "Login / Register",
+                        onClick = { navController.navigate("login") }
+                    )
+                }
+            } else {
+                // Show role-specific options
+                when (uiState.userRole) {
+                    "CUSTOMER" -> {
+                        item {
+                            ProfileMenuItem(
+                                icon = Icons.Default.ShoppingCart,
+                                title = "My Orders",
+                                onClick = { /* Handle orders */ }
+                            )
+                        }
+                        
+                        item {
+                            ProfileMenuItem(
+                                icon = Icons.Default.Favorite,
+                                title = "Favorites",
+                                onClick = { /* Handle favorites */ }
+                            )
+                        }
+                    }
+                    "SELLER" -> {
+                        item {
+                            ProfileMenuItem(
+                                icon = Icons.Default.Store,
+                                title = "My Shop",
+                                onClick = { navController.navigate("seller_dashboard") }
+                            )
+                        }
+                        
+                        item {
+                            ProfileMenuItem(
+                                icon = Icons.Default.ShoppingCart,
+                                title = "Orders",
+                                onClick = { navController.navigate("seller_orders") }
+                            )
+                        }
+                    }
+                    "ADMIN" -> {
+                        item {
+                            ProfileMenuItem(
+                                icon = Icons.Default.Dashboard,
+                                title = "Admin Dashboard",
+                                onClick = { navController.navigate("admin_dashboard") }
+                            )
+                        }
+                    }
+                }
+                
+                // Common options for all logged-in users
+                item {
+                    ProfileMenuItem(
+                        icon = Icons.Default.Settings,
+                        title = "Settings",
+                        onClick = { /* Handle settings */ }
+                    )
+                }
+                
+                item {
+                    ProfileMenuItem(
+                        icon = Icons.Default.ExitToApp,
+                        title = "Logout",
+                        onClick = { 
+                            authViewModel.signOut()
+                            navController.navigate("login") {
+                                popUpTo("home") { inclusive = true }
+                            }
+                        }
+                    )
+                }
             }
             
-            item {
-                ProfileMenuItem(
-                    icon = Icons.Default.ShoppingCart,
-                    title = "My Orders",
-                    onClick = { /* Handle orders */ }
-                )
-            }
-            
-            item {
-                ProfileMenuItem(
-                    icon = Icons.Default.Favorite,
-                    title = "Favorites",
-                    onClick = { /* Handle favorites */ }
-                )
-            }
-            
-            item {
-                ProfileMenuItem(
-                    icon = Icons.Default.Settings,
-                    title = "Settings",
-                    onClick = { /* Handle settings */ }
-                )
-            }
-            
+            // Common options for all users
             item {
                 ProfileMenuItem(
                     icon = Icons.Default.Info,
                     title = "About",
                     onClick = { /* Handle about */ }
+                )
+            }
+            
+            item {
+                ProfileMenuItem(
+                    icon = Icons.Default.Help,
+                    title = "Help & Support",
+                    onClick = { navController.navigate("help") }
                 )
             }
         }

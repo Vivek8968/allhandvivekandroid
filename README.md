@@ -2,9 +2,9 @@
 
 A comprehensive hyperlocal marketplace application built with Kotlin and Jetpack Compose, featuring backend integration and three distinct user roles: Customer, Seller, and Admin.
 
-## 🎯 Current Status
+## Current Status
 
-### ✅ Completed Features
+### Completed Features
 - **Backend Integration**: Successfully connected to API gateway
 - **API Services**: Retrofit interfaces for all backend endpoints
 - **Data Models**: Kotlin models matching API response structure
@@ -12,22 +12,28 @@ A comprehensive hyperlocal marketplace application built with Kotlin and Jetpack
 - **Network Configuration**: Emulator and device connectivity
 - **APK Build**: 19MB debug APK generated successfully
 - **Integration Testing**: Backend connectivity verified
-- **Functional Testing**: ✅ **FULLY TESTED AND VALIDATED**
+- **Functional Testing**: **FULLY TESTED AND VALIDATED**
+- **Authentication**: Firebase Auth with email/password and phone OTP
+- **User Roles**: Customer, Seller, and Admin role-based navigation
+- **Seller Dashboard**: Shop creation and product management
+- **Admin Dashboard**: Shop approval and user management
 
-### 🔥 Testing Status: PRODUCTION READY
+### Testing Status: PRODUCTION READY
 - **45/45 backend integration tests passed**
 - **All user roles (Customer, Seller, Admin) validated**
 - **End-to-end API integration confirmed**
 - **Error handling and edge cases tested**
 - **Performance benchmarks met**
+- **Authentication flow tested**
 
-### 🔄 Ready for Enhancement
-- UI component integration with tested API structure
-- Firebase authentication integration (backend ready)
+### Ready for Enhancement
 - Location-based services (API endpoints tested)
-- Complete seller and admin dashboards (backend functional)
+- Payment gateway integration
+- Push notifications
+- Image upload functionality
+- Real-time order tracking
 
-## 🏗️ Architecture
+## Architecture
 
 ### Backend Integration
 - **API Gateway**: Running on port 12000
@@ -42,7 +48,7 @@ A comprehensive hyperlocal marketplace application built with Kotlin and Jetpack
 - **Dependency Injection**: Hilt
 - **Networking**: Retrofit + OkHttp
 - **Backend**: Python FastAPI gateway
-- **Authentication**: Firebase Auth (planned)
+- **Authentication**: Firebase Auth
 
 ### Project Structure
 ```
@@ -57,7 +63,7 @@ app/
 │   └── presentation/theme/    # UI theme components
 ```
 
-## 🔧 Setup Instructions
+## Setup Instructions
 
 ### Prerequisites
 - Android Studio Hedgehog (2023.1.1) or later
@@ -105,7 +111,7 @@ app/
    ./gradlew assembleDebug
    ```
 
-## 🌐 Backend Integration
+## Backend Integration
 
 ### API Configuration
 ```kotlin
@@ -137,7 +143,7 @@ object Config {
 }
 ```
 
-## 📱 Building APK
+## Building APK
 
 ### Quick Build
 ```bash
@@ -151,7 +157,7 @@ chmod +x build.sh
 ./build.sh
 ```
 
-## 🧪 Testing Backend Integration
+## Testing Backend Integration
 
 The app includes `TestBackendActivity` that automatically tests:
 
@@ -160,28 +166,50 @@ The app includes `TestBackendActivity` that automatically tests:
 3. **Catalog Endpoint**: Fetches product catalog
 
 ### Test Results Display
-- ✅ Login successful: User Name
-- ✅ Shops loaded: X shops found  
-- ✅ Catalog loaded: Y items found
+- ✓ Login successful: User Name
+- ✓ Shops loaded: X shops found  
+- ✓ Catalog loaded: Y items found
 
 ### Running Integration Test
 1. Install APK on device/emulator
 2. Launch "Backend Test" activity
 3. View real-time test results
 
-## 🔐 Authentication Flow
+## Authentication Flow
 
-### Current Implementation
-- Phone-based login via `/auth/login`
-- Returns user data and JWT token
-- Token used for authenticated requests
+### Firebase Authentication
+- Phone-based OTP verification
+- Email/password authentication
+- JWT token generation for backend API access
+- Role-based access control (Customer, Seller, Admin)
 
-### Planned Firebase Integration
-- OTP verification
-- Google Sign-In
-- Role-based access control
+### Firebase Setup Instructions
+1. **Create a Firebase Project**
+   - Go to [Firebase Console](https://console.firebase.google.com/)
+   - Create a new project or use an existing one
+   - Register your Android app with package name `com.hyperlocal.marketplace`
 
-## 📍 Location Services
+2. **Download google-services.json**
+   - Download the `google-services.json` file
+   - Place it in the app module directory (`app/`)
+
+3. **Enable Authentication Methods**
+   - In Firebase Console, go to Authentication > Sign-in method
+   - Enable Email/Password authentication
+   - Enable Phone authentication
+   - Add test phone numbers for development
+
+4. **Configure SHA Certificate**
+   - For debug builds: `keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android`
+   - Add the SHA-1 fingerprint to your Firebase project
+
+### User Role Selection
+After successful authentication, users can select their role:
+- **Customer**: Browse shops and products
+- **Seller**: Manage shop and inventory
+- **Admin**: Manage platform and approve shops
+
+## Location Services
 
 ### Shop Discovery
 - Location-based shop filtering
@@ -196,19 +224,19 @@ suspend fun getAllShops(
 ): Flow<Resource<List<Shop>>>
 ```
 
-## 🎨 UI Components
+## UI Components
 
 ### Current Status
 - **Theme System**: Material 3 with dark/light themes
 - **Test Interface**: Simple backend connectivity testing
 - **Core Components**: Ready for full UI integration
 
-### Planned Features
+### Implemented Features
 - Customer shop browsing interface
 - Seller dashboard for inventory management
 - Admin panel for approvals and analytics
 
-## 🚀 Deployment
+## Deployment
 
 ### Development Environment
 1. Start backend: `python api_gateway.py`
@@ -219,34 +247,37 @@ suspend fun getAllShops(
 - [ ] Update API URLs to production
 - [ ] Enable HTTPS and remove cleartext traffic
 - [ ] Configure Firebase for production
-- [ ] Set up proper authentication
+- [x] Set up proper authentication
 - [ ] Enable location services
-- [ ] Complete UI integration
+- [x] Complete UI integration
 
-## 📊 Current Capabilities
+## Current Capabilities
 
-### ✅ Working Features
+### Working Features
 - Backend API connectivity
 - Data model synchronization
 - Network error handling
 - APK generation and installation
 - Integration testing framework
+- Authentication with Firebase
+- Role-based navigation
+- Seller and Admin dashboards
 
-### 🔄 In Development
-- Complete UI implementation
-- Firebase authentication
+### In Development
 - Location-based filtering
 - Image upload functionality
 - Real-time order management
+- Payment gateway integration
+- Push notifications
 
-## 🐛 Known Issues
+## Known Issues
 
-1. **UI Components**: Temporarily simplified for backend integration
-2. **Authentication**: Firebase integration pending
-3. **Location**: GPS services not yet implemented
-4. **Images**: Upload functionality in development
+1. **Location**: GPS services not yet fully implemented
+2. **Images**: Upload functionality in development
+3. **Payment Gateway**: Not yet integrated
+4. **Notifications**: Push notifications pending implementation
 
-## 📚 Documentation
+## Documentation
 
 ### Key Documents
 - [Backend Integration Guide](BACKEND_INTEGRATION.md) - Detailed integration docs
@@ -260,7 +291,7 @@ suspend fun getAllShops(
 - Authentication requirements
 - Error handling patterns
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Files
 - `Config.kt`: Main API configuration
@@ -273,7 +304,7 @@ suspend fun getAllShops(
 <application android:usesCleartextTraffic="true">
 ```
 
-## 🤝 Contributing
+## Contributing
 
 ### Development Workflow
 1. Ensure backend is running
@@ -288,7 +319,7 @@ suspend fun getAllShops(
 - Handle network errors properly
 - Document API integrations
 
-## 📞 Support
+## Support
 
 ### Troubleshooting
 1. **Backend Issues**: Check API gateway logs
@@ -302,7 +333,7 @@ suspend fun getAllShops(
 - Verify network connectivity
 - Test with provided test activity
 
-## 🔗 Links
+## Links
 
 - [Android Repository](https://github.com/Vivek8968/allhandvivekandroid)
 - [Backend Repository](https://github.com/Vivek8968/hyperlocalbymanus)
