@@ -32,29 +32,14 @@ fun HyperlocalApp(
     val navController = rememberNavController()
     val uiState by authViewModel.uiState.collectAsState()
     
-    // Determine start destination based on login status
-    val startDestination = if (uiState.isLoggedIn) {
-        when (uiState.userRole) {
-            "CUSTOMER" -> "home"
-            "SELLER" -> "seller_dashboard"
-            "ADMIN" -> "admin_dashboard"
-            else -> "login"
-        }
-    } else {
-        "login"
-    }
-    
     Scaffold(
         bottomBar = {
-            // Only show bottom navigation for customer role
-            if (uiState.isLoggedIn && uiState.userRole == "CUSTOMER") {
-                BottomNavigationBar(navController = navController)
-            }
+            BottomNavigationBar(navController = navController)
         }
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = startDestination,
+            startDestination = "home",
             modifier = Modifier.padding(innerPadding)
         ) {
             // Auth screens
