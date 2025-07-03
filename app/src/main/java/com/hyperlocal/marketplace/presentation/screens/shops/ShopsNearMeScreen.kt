@@ -43,7 +43,16 @@ fun ShopsNearMeScreen(navController: NavController) {
     var userLocation by remember { mutableStateOf<Location?>(null) }
     
     val locationPermissionState = rememberPermissionState(
-        Manifest.permission.ACCESS_FINE_LOCATION
+        permission = Manifest.permission.ACCESS_FINE_LOCATION,
+        onPermissionResult = { isGranted ->
+            if (isGranted) {
+                getCurrentLocation()
+            } else {
+                errorMessage = "Location permission is required to show nearby shops"
+                isLoading = false
+                shops = getSampleShops()
+            }
+        }
     )
     
     // Function to get current location
