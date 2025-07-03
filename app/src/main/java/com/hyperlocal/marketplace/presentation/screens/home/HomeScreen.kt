@@ -262,11 +262,11 @@ fun ShopsNearMeSection(shops: List<Shop>) {
 }
 
 @Composable
-fun ShopCard(shop: Shop) {
+fun ShopCard(shop: Shop, onClick: () -> Unit = {}) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { navController.navigate("shops") },
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = CardBackground

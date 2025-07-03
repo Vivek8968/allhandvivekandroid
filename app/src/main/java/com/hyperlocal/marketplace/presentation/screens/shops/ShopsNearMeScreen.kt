@@ -109,8 +109,8 @@ fun ShopsNearMeScreen(navController: NavController) {
     }
     
     // Observe permission changes
-    LaunchedEffect(locationPermissionState.hasPermission) {
-        if (locationPermissionState.hasPermission) {
+    LaunchedEffect(locationPermissionState.status) {
+        if (locationPermissionState.status.isGranted) {
             getCurrentLocation()
         }
     }
@@ -190,7 +190,12 @@ fun ShopsNearMeScreen(navController: NavController) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(shops) { shop ->
-                    ShopCard(shop = shop)
+                    ShopCard(
+                        shop = shop,
+                        onClick = {
+                            // Navigate to shop details
+                        }
+                    )
                 }
             }
         }
