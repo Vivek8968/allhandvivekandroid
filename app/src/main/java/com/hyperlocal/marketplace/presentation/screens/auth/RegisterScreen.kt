@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -184,7 +183,7 @@ fun RegisterScreen(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Next
             ),
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
@@ -214,7 +213,7 @@ fun RegisterScreen(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
