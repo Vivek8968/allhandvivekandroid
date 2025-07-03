@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hyperlocal.marketplace.data.models.Shop
+import com.hyperlocal.marketplace.presentation.components.ShopCard
 import com.hyperlocal.marketplace.presentation.screens.auth.AuthViewModel
 import com.hyperlocal.marketplace.presentation.theme.*
 
@@ -362,7 +363,8 @@ fun getSampleShops(): List<Shop> {
             category = "Grocery",
             rating = 4.5,
             imageUrl = null,
-            ownerId = "owner1"
+            ownerId = "owner1",
+            whatsappNumber = "+919876543210"
         ),
         Shop(
             id = "2",
@@ -376,7 +378,8 @@ fun getSampleShops(): List<Shop> {
             category = "Electronics",
             rating = 4.2,
             imageUrl = null,
-            ownerId = "owner2"
+            ownerId = "owner2",
+            whatsappNumber = "+919876543211"
         ),
         Shop(
             id = "3",
@@ -390,7 +393,38 @@ fun getSampleShops(): List<Shop> {
             category = "Clothing",
             rating = 4.8,
             imageUrl = null,
-            ownerId = "owner3"
+            ownerId = "owner3",
+            whatsappNumber = "+919876543212"
+        ),
+        Shop(
+            id = "4",
+            name = "Foodie's Paradise",
+            description = "Delicious food from around the world",
+            address = "101 Culinary Avenue, Food District",
+            latitude = 40.7580,
+            longitude = -73.9855,
+            distance = 0.8,
+            distanceFormatted = "0.8 km away",
+            category = "Food",
+            rating = 4.7,
+            imageUrl = null,
+            ownerId = "owner4",
+            whatsappNumber = "+919876543213"
+        ),
+        Shop(
+            id = "5",
+            name = "Health & Wellness Pharmacy",
+            description = "Your health is our priority",
+            address = "202 Wellness Road, Medical Center",
+            latitude = 40.7680,
+            longitude = -73.9750,
+            distance = 1.5,
+            distanceFormatted = "1.5 km away",
+            category = "Pharmacy",
+            rating = 4.3,
+            imageUrl = null,
+            ownerId = "owner5",
+            whatsappNumber = "+919876543214"
         )
     )
 }

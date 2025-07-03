@@ -28,7 +28,7 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
 import com.google.android.gms.location.LocationServices
 import com.hyperlocal.marketplace.data.models.Shop
-import com.hyperlocal.marketplace.presentation.screens.home.ShopCard
+import com.hyperlocal.marketplace.presentation.components.ShopCard
 import com.hyperlocal.marketplace.presentation.screens.home.getSampleShops
 import com.hyperlocal.marketplace.presentation.theme.Primary
 import kotlinx.coroutines.launch

@@ -35,7 +35,9 @@ data class Shop(
     @SerializedName("openingTime")
     val openingTime: String = "09:00",
     @SerializedName("closingTime")
-    val closingTime: String = "21:00"
+    val closingTime: String = "21:00",
+    @SerializedName("whatsappNumber")
+    val whatsappNumber: String? = "+919999999999" // Default for demo purposes
 ) : Parcelable
 
 data class ShopCreateRequest(
@@ -56,7 +58,9 @@ data class ShopCreateRequest(
     @SerializedName("openingTime")
     val openingTime: String = "09:00",
     @SerializedName("closingTime")
-    val closingTime: String = "21:00"
+    val closingTime: String = "21:00",
+    @SerializedName("whatsappNumber")
+    val whatsappNumber: String? = null
 )
 
 data class ShopUpdateRequest(
