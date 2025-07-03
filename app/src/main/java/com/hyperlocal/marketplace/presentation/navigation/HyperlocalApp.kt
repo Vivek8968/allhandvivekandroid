@@ -15,7 +15,7 @@ import com.hyperlocal.marketplace.data.models.UserRole
 import com.hyperlocal.marketplace.presentation.screens.admin.AdminDashboardScreen
 import com.hyperlocal.marketplace.presentation.screens.auth.AuthViewModel
 import com.hyperlocal.marketplace.presentation.screens.auth.ModernLoginScreen
-import com.hyperlocal.marketplace.presentation.screens.auth.RegisterScreen
+import com.hyperlocal.marketplace.presentation.screens.auth.ModernRegisterScreen
 import com.hyperlocal.marketplace.presentation.screens.auth.RoleSelectionScreen
 import com.hyperlocal.marketplace.presentation.screens.categories.CategoriesScreen
 import com.hyperlocal.marketplace.presentation.screens.help.HelpScreen
@@ -47,7 +47,7 @@ fun HyperlocalApp(
                 ModernLoginScreen(navController = navController)
             }
             composable("register") {
-                RegisterScreen(navController = navController)
+                ModernRegisterScreen(navController = navController)
             }
             composable("role_selection") {
                 RoleSelectionScreen(navController = navController)

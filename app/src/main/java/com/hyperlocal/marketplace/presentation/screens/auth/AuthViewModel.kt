@@ -286,6 +286,26 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+    
+    // Google Sign-In Authentication
+    fun signInWithGoogle() {
+        _uiState.update { it.copy(isLoading = true, error = "") }
+        
+        // This is a placeholder for Google Sign-In implementation
+        // In a real implementation, you would:
+        // 1. Launch the Google Sign-In intent
+        // 2. Handle the result in onActivityResult
+        // 3. Get the Google ID token
+        // 4. Exchange it for a Firebase credential
+        // 5. Sign in to Firebase with that credential
+        // 6. Then proceed with backend authentication as in other methods
+        
+        // For now, we'll just show a message that this feature is coming soon
+        _uiState.update { it.copy(
+            isLoading = false,
+            error = "Google Sign-In will be available soon!"
+        ) }
+    }
 }
 
 data class AuthUiState(
@@ -298,23 +318,3 @@ data class AuthUiState(
     val userPhone: String? = null,
     val error: String = ""
 )
-
-// Google Sign-In Authentication
-fun AuthViewModel.signInWithGoogle() {
-    _uiState.update { it.copy(isLoading = true, error = "") }
-    
-    // This is a placeholder for Google Sign-In implementation
-    // In a real implementation, you would:
-    // 1. Launch the Google Sign-In intent
-    // 2. Handle the result in onActivityResult
-    // 3. Get the Google ID token
-    // 4. Exchange it for a Firebase credential
-    // 5. Sign in to Firebase with that credential
-    // 6. Then proceed with backend authentication as in other methods
-    
-    // For now, we'll just show a message that this feature is coming soon
-    _uiState.update { it.copy(
-        isLoading = false,
-        error = "Google Sign-In will be available soon!"
-    ) }
-}
