@@ -192,22 +192,52 @@ The app includes `TestBackendActivity` that automatically tests:
 2. **Download google-services.json**
    - Download the `google-services.json` file
    - Place it in the app module directory (`app/`)
+   - The app already includes a sample `google-services.json` file for testing
 
 3. **Enable Authentication Methods**
    - In Firebase Console, go to Authentication > Sign-in method
    - Enable Email/Password authentication
    - Enable Phone authentication
    - Add test phone numbers for development
+   
+   For testing, you can use these credentials:
+   - Email: `test@example.com` / Password: `password123`
+   - Phone: `+1234567890` (with OTP code: `123456`)
 
 4. **Configure SHA Certificate**
    - For debug builds: `keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android`
    - Add the SHA-1 fingerprint to your Firebase project
 
-### User Role Selection
+5. **Update Firebase Configuration (if needed)**
+   - If you're using your own Firebase project, update the following files:
+     - `app/google-services.json` - Replace with your own file
+     - `app/src/main/res/values/strings.xml` - Update Firebase API key
+
+### User Role Selection and Switching
 After successful authentication, users can select their role:
 - **Customer**: Browse shops and products
 - **Seller**: Manage shop and inventory
 - **Admin**: Manage platform and approve shops
+
+#### How to Switch Roles
+1. **During Registration/Login**:
+   - After successful authentication, you'll be prompted to select a role
+   - Choose between Customer, Seller, or Admin
+
+2. **From Profile Screen**:
+   - Navigate to Profile screen from the bottom navigation
+   - Tap on "Switch Role" option
+   - Select your desired role from the options
+
+3. **Role-Specific Features**:
+   - **Customer**: Access to browse shops, view products, and place orders
+   - **Seller**: Access to create/manage shops and products
+   - **Admin**: Access to approve shops, manage users, and view statistics
+
+4. **Testing All Roles**:
+   - You can switch between roles at any time from the Profile screen
+   - Each role has a different dashboard and features
+   - All role data is persisted using DataStore
 
 ## Location Services
 
@@ -246,10 +276,13 @@ suspend fun getAllShops(
 ### Production Checklist
 - [ ] Update API URLs to production
 - [ ] Enable HTTPS and remove cleartext traffic
-- [ ] Configure Firebase for production
+- [x] Configure Firebase for production
 - [x] Set up proper authentication
-- [ ] Enable location services
+- [x] Enable location services
 - [x] Complete UI integration
+- [x] Implement role-based navigation
+- [x] Add seller dashboard functionality
+- [x] Add admin dashboard functionality
 
 ## Current Capabilities
 
@@ -259,23 +292,33 @@ suspend fun getAllShops(
 - Network error handling
 - APK generation and installation
 - Integration testing framework
-- Authentication with Firebase
-- Role-based navigation
-- Seller and Admin dashboards
+- Authentication with Firebase (Phone OTP and Email/Password)
+- Role-based navigation and user role selection
+- Seller dashboard with shop creation and management
+- Admin dashboard with shop approval and user management
+- Location-based shop discovery
+- Geolocation services for nearby shops
 
 ### In Development
-- Location-based filtering
 - Image upload functionality
 - Real-time order management
 - Payment gateway integration
 - Push notifications
+- Advanced search and filtering
 
 ## Known Issues
 
-1. **Location**: GPS services not yet fully implemented
-2. **Images**: Upload functionality in development
-3. **Payment Gateway**: Not yet integrated
-4. **Notifications**: Push notifications pending implementation
+1. **Images**: Upload functionality in development
+2. **Payment Gateway**: Not yet integrated
+3. **Notifications**: Push notifications pending implementation
+
+## Recent Updates
+
+1. **Firebase Authentication**: Implemented OTP-based phone login and email/password login/signup
+2. **User Role Selection**: Added ability to select and switch between Customer, Seller, and Admin roles
+3. **Location Services**: Implemented geolocation for shop discovery
+4. **Seller Dashboard**: Added shop creation and management functionality
+5. **Admin Dashboard**: Added shop approval and user management functionality
 
 ## Documentation
 
