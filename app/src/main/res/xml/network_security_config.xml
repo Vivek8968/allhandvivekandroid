@@ -2,5 +2,12 @@
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">192.168.1.8</domain>
+        <!-- Allow all microservice ports -->
+        <port>8001</port> <!-- User Service -->
+        <port>8002</port> <!-- Seller Service -->
+        <port>8003</port> <!-- Customer Service -->
+        <port>8004</port> <!-- Catalog Service -->
+        <port>8005</port> <!-- Admin Service -->
+        <port>12000</port> <!-- Legacy API Gateway (keeping for backward compatibility) -->
     </domain-config>
 </network-security-config>

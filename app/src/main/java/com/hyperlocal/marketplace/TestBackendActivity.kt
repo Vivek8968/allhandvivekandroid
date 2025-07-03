@@ -15,26 +15,46 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.Response
 
-// Simple API interface for testing
-interface TestApiService {
-    @GET("shops")
-    suspend fun getShops(): Response<ApiResponse<List<Shop>>>
-    
-    @GET("catalog")
-    suspend fun getCatalog(): Response<ApiResponse<List<CatalogItem>>>
-    
+// Simple API interfaces for testing each microservice
+interface UserTestApiService {
     @POST("auth/login")
     suspend fun login(@Body request: LoginRequest): Response<ApiResponse<LoginResponseData>>
 }
 
+interface CustomerTestApiService {
+    @GET("shops")
+    suspend fun getShops(): Response<ApiResponse<List<Shop>>>
+}
+
+interface CatalogTestApiService {
+    @GET("items")
+    suspend fun getCatalog(): Response<ApiResponse<List<CatalogItem>>>
+}
+
 class TestBackendActivity : ComponentActivity() {
     
-    private val apiService by lazy {
+    private val userApiService by lazy {
         Retrofit.Builder()
-            .baseUrl(Config.BASE_URL + "/")
+            .baseUrl(Config.USER_SERVICE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(TestApiService::class.java)
+            .create(UserTestApiService::class.java)
+    }
+    
+    private val customerApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(Config.CUSTOMER_SERVICE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CustomerTestApiService::class.java)
+    }
+    
+    private val catalogApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(Config.CATALOG_SERVICE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CatalogTestApiService::class.java)
     }
     
     private lateinit var textView: TextView
@@ -43,7 +63,10 @@ class TestBackendActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         
         textView = TextView(this).apply {
-            text = "Testing Backend Connection...\nAPI URL: ${Config.BASE_URL}"
+            text = "Testing Microservices Backend Connection...\n" +
+                   "User Service: ${Config.USER_SERVICE_URL}\n" +
+                   "Customer Service: ${Config.CUSTOMER_SERVICE_URL}\n" +
+                   "Catalog Service: ${Config.CATALOG_SERVICE_URL}"
             textSize = 16f
             setPadding(32, 32, 32, 32)
         }
@@ -54,13 +77,13 @@ class TestBackendActivity : ComponentActivity() {
     
     private fun testBackendConnection() {
         val results = StringBuilder()
-        results.append("🔄 Testing backend connection...\n\n")
+        results.append("🔄 Testing microservices backend connection...\n\n")
         
         lifecycleScope.launch {
             try {
-                // Test 1: Login
-                results.append("📱 Testing login endpoint...\n")
-                val loginResponse = apiService.login(LoginRequest("1234567890"))
+                // Test 1: Login (User Service)
+                results.append("📱 Testing User Service - login endpoint...\n")
+                val loginResponse = userApiService.login(LoginRequest("1234567890"))
                 if (loginResponse.isSuccessful) {
                     val body = loginResponse.body()
                     if (body?.status == true) {
@@ -73,9 +96,9 @@ class TestBackendActivity : ComponentActivity() {
                     results.append("❌ Login request failed: ${loginResponse.code()}\n\n")
                 }
                 
-                // Test 2: Get Shops
-                results.append("🏪 Testing shops endpoint...\n")
-                val shopsResponse = apiService.getShops()
+                // Test 2: Get Shops (Customer Service)
+                results.append("🏪 Testing Customer Service - shops endpoint...\n")
+                val shopsResponse = customerApiService.getShops()
                 if (shopsResponse.isSuccessful) {
                     val body = shopsResponse.body()
                     if (body?.status == true && body.data != null) {
@@ -91,9 +114,9 @@ class TestBackendActivity : ComponentActivity() {
                     results.append("❌ Shops request failed: ${shopsResponse.code()}\n\n")
                 }
                 
-                // Test 3: Get Catalog
-                results.append("📦 Testing catalog endpoint...\n")
-                val catalogResponse = apiService.getCatalog()
+                // Test 3: Get Catalog (Catalog Service)
+                results.append("📦 Testing Catalog Service - items endpoint...\n")
+                val catalogResponse = catalogApiService.getCatalog()
                 if (catalogResponse.isSuccessful) {
                     val body = catalogResponse.body()
                     if (body?.status == true && body.data != null) {
@@ -109,7 +132,7 @@ class TestBackendActivity : ComponentActivity() {
                     results.append("❌ Catalog request failed: ${catalogResponse.code()}\n\n")
                 }
                 
-                results.append("🎉 Backend integration test completed!")
+                results.append("🎉 Microservices backend integration test completed!")
                 
             } catch (e: Exception) {
                 results.append("💥 Error: ${e.message}\n")

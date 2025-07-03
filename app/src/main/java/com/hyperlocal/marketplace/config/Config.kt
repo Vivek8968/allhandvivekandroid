@@ -19,36 +19,36 @@ object Config {
     // Environment toggle - set to false for production
     const val IS_DEBUG = true
     
-    // Base URLs for backend services - NOW CONNECTED TO REAL API GATEWAY!
-    private const val DEBUG_BASE_URL = "http://192.168.1.8:12000"  // Local development IP
-    private const val PRODUCTION_BASE_URL = "https://work-1-hhizqbkkwgjdnapz.prod-runtime.all-hands.dev:12000"
+    // Base host for microservices
+    private const val DEBUG_BASE_HOST = "http://192.168.1.8"  // Local development IP
+    private const val PRODUCTION_BASE_HOST = "https://work-1-hhizqbkkwgjdnapz.prod-runtime.all-hands.dev"
     
-    val BASE_URL = if (IS_DEBUG) DEBUG_BASE_URL else PRODUCTION_BASE_URL
+    private val BASE_HOST = if (IS_DEBUG) DEBUG_BASE_HOST else PRODUCTION_BASE_HOST
     
-    // Service URLs - All routed through API Gateway
-    val USER_SERVICE_URL = "$BASE_URL/"
-    val SELLER_SERVICE_URL = "$BASE_URL/"
-    val CUSTOMER_SERVICE_URL = "$BASE_URL/"
-    val CATALOG_SERVICE_URL = "$BASE_URL/"
-    val ADMIN_SERVICE_URL = "$BASE_URL/"
+    // Microservice URLs - Each service has its own port and base path
+    val USER_SERVICE_URL = "$BASE_HOST:8001/api/users/"
+    val SELLER_SERVICE_URL = "$BASE_HOST:8002/api/sellers/"
+    val CUSTOMER_SERVICE_URL = "$BASE_HOST:8003/api/customers/"
+    val CATALOG_SERVICE_URL = "$BASE_HOST:8004/api/catalog/"
+    val ADMIN_SERVICE_URL = "$BASE_HOST:8005/api/admin/"
     
-    // API Endpoints - Updated to match API Gateway routes
+    // API Endpoints - Updated for microservices architecture
     object Endpoints {
-        // User/Auth Service
+        // User/Auth Service - /api/users/ prefix is now in the base URL
         const val REGISTER = "auth/register"
         const val LOGIN = "auth/login"
         const val VERIFY_TOKEN = "auth/verify-token"
-        const val GET_USER_PROFILE = "users/me"
-        const val UPDATE_USER_PROFILE = "users/me"
+        const val GET_USER_PROFILE = "me"
+        const val UPDATE_USER_PROFILE = "me"
         
-        // Seller/Vendor Service
-        const val GET_VENDOR_SHOP = "vendor/shop"
-        const val CREATE_VENDOR_SHOP = "vendor/shop"
-        const val UPDATE_VENDOR_SHOP = "vendor/shop"
-        const val GET_VENDOR_PRODUCTS = "vendor/products"
-        const val ADD_PRODUCT_FROM_CATALOG = "vendor/products/add-from-catalog"
+        // Seller/Vendor Service - /api/sellers/ prefix is now in the base URL
+        const val GET_VENDOR_SHOP = "shop"
+        const val CREATE_VENDOR_SHOP = "shop"
+        const val UPDATE_VENDOR_SHOP = "shop"
+        const val GET_VENDOR_PRODUCTS = "products"
+        const val ADD_PRODUCT_FROM_CATALOG = "products/add-from-catalog"
         
-        // Customer/Shop Service
+        // Customer/Shop Service - /api/customers/ prefix is now in the base URL
         const val GET_ALL_SHOPS = "shops"
         const val GET_SHOP_BY_ID = "shops/{id}"
         const val GET_SHOP_PRODUCTS = "shops/{id}/products"
@@ -58,15 +58,15 @@ object Config {
         const val UPDATE_SHOP_PRODUCT = "shops/{shop_id}/products/{product_id}"
         const val DELETE_SHOP_PRODUCT = "shops/{shop_id}/products/{product_id}"
         
-        // Catalog Service
-        const val GET_CATALOG = "catalog"
-        const val GET_CATALOG_CATEGORIES = "catalog/categories"
-        const val GET_PRODUCT_BY_ID = "products/{id}"
+        // Catalog Service - /api/catalog/ prefix is now in the base URL
+        const val GET_CATALOG = "items"
+        const val GET_CATALOG_CATEGORIES = "categories"
+        const val GET_PRODUCT_BY_ID = "items/{id}"
         
-        // Admin Service (placeholder - not implemented in gateway yet)
-        const val ADMIN_STATS = "admin/stats"
-        const val ADMIN_USERS = "admin/users"
-        const val ADMIN_SHOPS = "admin/shops"
+        // Admin Service - /api/admin/ prefix is now in the base URL
+        const val ADMIN_STATS = "stats"
+        const val ADMIN_USERS = "users"
+        const val ADMIN_SHOPS = "shops"
     }
     
     // Firebase Configuration
