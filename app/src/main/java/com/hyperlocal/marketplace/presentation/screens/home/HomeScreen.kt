@@ -222,7 +222,7 @@ fun CategoryCard(category: String, onClick: () -> Unit = {}) {
         modifier = Modifier
             .width(120.dp)
             .height(80.dp)
-            .clickable(onClick = onClick),
+            .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = CardBackground
@@ -271,7 +271,7 @@ fun ShopCard(shop: Shop, onClick: () -> Unit = {}) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = CardBackground
