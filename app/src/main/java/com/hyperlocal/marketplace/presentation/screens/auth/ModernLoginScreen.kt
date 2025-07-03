@@ -248,7 +248,7 @@ fun ModernLoginScreen(
             
             SocialLoginButton(
                 type = SocialLoginType.GOOGLE,
-                onClick = { /* TODO: Implement Google Sign-In */ }
+                onClick = { viewModel.signInWithGoogle() }
             )
             
             Spacer(modifier = Modifier.height(16.dp))
@@ -285,7 +285,10 @@ fun ModernLoginScreen(
             // Create Shop Button
             SocialLoginButton(
                 type = SocialLoginType.SHOP,
-                onClick = { navController.navigate("register") }
+                onClick = { 
+                    // Navigate to register screen for shop creation
+                    navController.navigate("register")
+                }
             )
             
             Spacer(modifier = Modifier.height(24.dp))
