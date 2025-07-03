@@ -157,6 +157,17 @@ chmod +x build.sh
 ./build.sh
 ```
 
+### Download Pre-built APK
+The latest pre-built APK is available in the repository at `app/build/outputs/apk/debug/app-debug.apk`. You can download it directly from GitHub or build it yourself using the instructions above.
+
+### Installation
+```bash
+# Install via ADB (Android Debug Bridge)
+adb install app/build/outputs/apk/debug/app-debug.apk
+
+# Or install by transferring the APK to your device and opening it
+```
+
 ## Testing Backend Integration
 
 The app includes `TestBackendActivity` that automatically tests:
