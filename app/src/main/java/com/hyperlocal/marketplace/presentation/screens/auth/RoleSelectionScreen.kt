@@ -163,6 +163,7 @@ fun RoleOption(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+    @OptIn(ExperimentalMaterial3Api::class)
     Card(
         modifier = Modifier
             .fillMaxWidth()

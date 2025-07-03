@@ -205,19 +205,24 @@ fun CategoriesSection(categories: List<String>) {
             contentPadding = PaddingValues(horizontal = 4.dp)
         ) {
             items(categories) { category ->
-                CategoryCard(category = category)
+                CategoryCard(
+                    category = category,
+                    onClick = {
+                        // Navigate to category details
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-fun CategoryCard(category: String) {
+fun CategoryCard(category: String, onClick: () -> Unit = {}) {
     Card(
         modifier = Modifier
             .width(120.dp)
             .height(80.dp)
-            .clickable { navController.navigate("categories") },
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = CardBackground

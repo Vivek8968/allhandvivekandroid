@@ -398,7 +398,9 @@ fun ShopDashboardContent(
                 ProductItem(
                     product = product,
                     onEdit = { navController.navigate("seller_edit_product/${product.id}") },
-                    onDelete = { viewModel.deleteProduct(product.id) }
+                    onDelete = { 
+                        // Delete product
+                    }
                 )
             }
         }

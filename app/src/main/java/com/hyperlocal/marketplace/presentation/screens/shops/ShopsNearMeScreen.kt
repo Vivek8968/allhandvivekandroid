@@ -24,6 +24,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.isGranted
 import com.google.android.gms.location.LocationServices
 import com.hyperlocal.marketplace.data.models.Shop
 import com.hyperlocal.marketplace.presentation.screens.home.ShopCard
@@ -41,19 +43,6 @@ fun ShopsNearMeScreen(navController: NavController) {
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf("") }
     var userLocation by remember { mutableStateOf<Location?>(null) }
-    
-    val locationPermissionState = rememberPermissionState(
-        permission = Manifest.permission.ACCESS_FINE_LOCATION,
-        onPermissionResult = { isGranted ->
-            if (isGranted) {
-                getCurrentLocation()
-            } else {
-                errorMessage = "Location permission is required to show nearby shops"
-                isLoading = false
-                shops = getSampleShops()
-            }
-        }
-    )
     
     // Function to get current location
     fun getCurrentLocation() {
@@ -97,11 +86,24 @@ fun ShopsNearMeScreen(navController: NavController) {
                     shops = getSampleShops()
                 }
         } else {
-            locationPermissionState.launchPermissionRequest()
+            // Permission not granted, will be handled by the permission state
             isLoading = false
             shops = getSampleShops()
         }
     }
+    
+    val locationPermissionState = rememberPermissionState(
+        permission = Manifest.permission.ACCESS_FINE_LOCATION,
+        onPermissionResult = { isGranted ->
+            if (isGranted) {
+                getCurrentLocation()
+            } else {
+                errorMessage = "Location permission is required to show nearby shops"
+                isLoading = false
+                shops = getSampleShops()
+            }
+        }
+    )
     
     // Request location on first launch
     LaunchedEffect(Unit) {
