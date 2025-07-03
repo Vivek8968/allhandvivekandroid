@@ -20,7 +20,7 @@ object Config {
     const val IS_DEBUG = true
     
     // Base URLs for backend services - NOW CONNECTED TO REAL API GATEWAY!
-    private const val DEBUG_BASE_URL = "http://10.0.2.2:12000"  // Android emulator localhost
+    private const val DEBUG_BASE_URL = "http://192.168.1.8:12000"  // Local development IP
     private const val PRODUCTION_BASE_URL = "https://work-1-hhizqbkkwgjdnapz.prod-runtime.all-hands.dev:12000"
     
     val BASE_URL = if (IS_DEBUG) DEBUG_BASE_URL else PRODUCTION_BASE_URL
