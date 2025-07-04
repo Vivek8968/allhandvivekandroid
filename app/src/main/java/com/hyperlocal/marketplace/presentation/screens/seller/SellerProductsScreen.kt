@@ -189,7 +189,7 @@ fun SellerProductsScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(filteredProducts) { product ->
-                        ProductItem(
+                        ProductListItem(
                             product = product,
                             onEditClick = {
                                 navController.navigate("edit_product/${product.id}")
@@ -246,7 +246,7 @@ fun StatCard(
 }
 
 @Composable
-fun ProductItem(
+fun ProductListItem(
     product: Product,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
