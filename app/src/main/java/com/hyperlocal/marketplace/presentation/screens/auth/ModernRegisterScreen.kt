@@ -53,7 +53,8 @@ fun ModernRegisterScreen(
 
     LaunchedEffect(uiState.isRegistered) {
         if (uiState.isRegistered) {
-            navController.navigate("role_selection") {
+            Toast.makeText(context, "Registration successful! Please login.", Toast.LENGTH_LONG).show()
+            navController.navigate("login") {
                 popUpTo("register") { inclusive = true }
             }
         }

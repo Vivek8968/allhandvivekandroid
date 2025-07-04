@@ -22,25 +22,25 @@ interface AdminApiService {
         @Header("Authorization") token: String
     ): Response<ApiResponse<List<Shop>>>
     
-    @PUT("admin/shops/{id}/approve")
+    @PUT("shops/{id}/approve")
     suspend fun approveShop(
         @Header("Authorization") token: String,
         @Path("id") shopId: String
     ): Response<ApiResponse<Shop>>
     
-    @PUT("admin/shops/{id}/reject")
+    @PUT("shops/{id}/reject")
     suspend fun rejectShop(
         @Header("Authorization") token: String,
         @Path("id") shopId: String
     ): Response<ApiResponse<Shop>>
     
-    @DELETE("admin/shops/{id}")
+    @DELETE("shops/{id}")
     suspend fun deleteShop(
         @Header("Authorization") token: String,
         @Path("id") shopId: String
     ): Response<ApiResponse<Any>>
     
-    @DELETE("admin/users/{id}")
+    @DELETE("users/{id}")
     suspend fun deleteUser(
         @Header("Authorization") token: String,
         @Path("id") userId: Int

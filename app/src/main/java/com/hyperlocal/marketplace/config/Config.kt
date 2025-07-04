@@ -71,9 +71,12 @@ object Config {
     
     // Firebase Configuration
     object Firebase {
-        // TODO: Add your Firebase project configuration
-        const val PROJECT_ID = "your-firebase-project-id"
-        const val WEB_CLIENT_ID = "your-web-client-id.googleusercontent.com"
+        // Firebase project configuration
+        const val PROJECT_ID = "hyperlocal-marketplace"
+        const val WEB_CLIENT_ID = "1234567890-abcdefghijklmnopqrstuvwxyz.apps.googleusercontent.com"
+        
+        // Note: This is a placeholder client ID. You need to replace it with your actual
+        // Web Client ID from the Firebase Console > Authentication > Sign-in method > Google
     }
     
     // App Configuration

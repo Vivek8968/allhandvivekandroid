@@ -23,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val userPreferencesRepository: UserPreferencesRepository
+    private val userPreferencesRepository: UserPreferencesRepository,
+    private val googleSignInHelper: GoogleSignInHelper
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -291,20 +292,83 @@ class AuthViewModel @Inject constructor(
     fun signInWithGoogle() {
         _uiState.update { it.copy(isLoading = true, error = "") }
         
-        // This is a placeholder for Google Sign-In implementation
-        // In a real implementation, you would:
-        // 1. Launch the Google Sign-In intent
-        // 2. Handle the result in onActivityResult
-        // 3. Get the Google ID token
-        // 4. Exchange it for a Firebase credential
-        // 5. Sign in to Firebase with that credential
-        // 6. Then proceed with backend authentication as in other methods
-        
-        // For now, we'll just show a message that this feature is coming soon
-        _uiState.update { it.copy(
-            isLoading = false,
-            error = "Google Sign-In will be available soon!"
-        ) }
+        // The actual sign-in intent is launched from MainActivity
+        // This method will be called when checking for the result
+        viewModelScope.launch {
+            try {
+                val task = com.hyperlocal.marketplace.presentation.MainActivity.googleSignInTask
+                if (task != null) {
+                    // Process the Google Sign-In result
+                    val account = googleSignInHelper.handleSignInResult(task)
+                    if (account != null) {
+                        // Get Firebase credential from Google account
+                        val authResult = googleSignInHelper.firebaseAuthWithGoogle(account)
+                        if (authResult != null) {
+                            // Get Firebase token
+                            val firebaseToken = authRepository.getIdToken()
+                            if (firebaseToken != null) {
+                                // Login with backend
+                                val response = authRepository.loginWithFirebaseToken(firebaseToken)
+                                if (response.isSuccessful && response.body() != null) {
+                                    val data = response.body()!!.data
+                                    if (data != null) {
+                                        // Save user data
+                                        authRepository.saveUserData(data.token, data.user)
+                                        _uiState.update { it.copy(
+                                            isLoading = false,
+                                            isLoggedIn = true,
+                                            userRole = data.user.role.name,
+                                            userName = data.user.name,
+                                            userEmail = data.user.email,
+                                            userPhone = data.user.phone
+                                        ) }
+                                    } else {
+                                        _uiState.update { it.copy(
+                                            isLoading = false,
+                                            error = "Failed to get user data"
+                                        ) }
+                                    }
+                                } else {
+                                    _uiState.update { it.copy(
+                                        isLoading = false,
+                                        error = response.errorBody()?.string() ?: "Login failed"
+                                    ) }
+                                }
+                            } else {
+                                _uiState.update { it.copy(
+                                    isLoading = false,
+                                    error = "Failed to get Firebase token"
+                                ) }
+                            }
+                        } else {
+                            _uiState.update { it.copy(
+                                isLoading = false,
+                                error = "Failed to authenticate with Firebase"
+                            ) }
+                        }
+                    } else {
+                        _uiState.update { it.copy(
+                            isLoading = false,
+                            error = "Google Sign-In failed"
+                        ) }
+                    }
+                } else {
+                    _uiState.update { it.copy(
+                        isLoading = false,
+                        error = "No Google Sign-In result found"
+                    ) }
+                }
+                
+                // Clear the task after processing
+                com.hyperlocal.marketplace.presentation.MainActivity.googleSignInTask = null
+                
+            } catch (e: Exception) {
+                _uiState.update { it.copy(
+                    isLoading = false,
+                    error = e.message ?: "Google Sign-In failed"
+                ) }
+            }
+        }
     }
 }
 

@@ -30,7 +30,8 @@ import com.hyperlocal.marketplace.presentation.screens.shops.ShopsNearMeScreen
 
 @Composable
 fun HyperlocalApp(
-    authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel(),
+    onGoogleSignInRequested: () -> Unit = {}
 ) {
     val navController = rememberNavController()
     val uiState by authViewModel.uiState.collectAsState()
@@ -47,7 +48,10 @@ fun HyperlocalApp(
         ) {
             // Auth screens
             composable("login") {
-                ModernLoginScreen(navController = navController)
+                ModernLoginScreen(
+                    navController = navController,
+                    onGoogleSignInRequested = onGoogleSignInRequested
+                )
             }
             composable("register") {
                 ModernRegisterScreen(navController = navController)

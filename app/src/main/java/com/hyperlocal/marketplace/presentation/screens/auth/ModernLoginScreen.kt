@@ -35,7 +35,8 @@ import com.hyperlocal.marketplace.presentation.theme.Primary
 @Composable
 fun ModernLoginScreen(
     navController: NavController,
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: AuthViewModel = hiltViewModel(),
+    onGoogleSignInRequested: () -> Unit = {}
 ) {
     var showPhoneVerification by remember { mutableStateOf(false) }
     var phoneNumber by remember { mutableStateOf("") }
@@ -66,6 +67,14 @@ fun ModernLoginScreen(
                     popUpTo("login") { inclusive = true }
                 }
             }
+        }
+    }
+    
+    // Check for Google Sign-In results
+    LaunchedEffect(Unit) {
+        val task = com.hyperlocal.marketplace.presentation.MainActivity.googleSignInTask
+        if (task != null) {
+            viewModel.signInWithGoogle()
         }
     }
 
@@ -253,7 +262,7 @@ fun ModernLoginScreen(
                 type = SocialLoginType.GOOGLE,
                 onClick = { 
                     Toast.makeText(context, "Signing in with Google...", Toast.LENGTH_SHORT).show()
-                    viewModel.signInWithGoogle() 
+                    onGoogleSignInRequested()
                 }
             )
             
