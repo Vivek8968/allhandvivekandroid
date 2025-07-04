@@ -22,7 +22,10 @@ import com.hyperlocal.marketplace.presentation.screens.help.HelpScreen
 import com.hyperlocal.marketplace.presentation.screens.home.HomeScreen
 import com.hyperlocal.marketplace.presentation.screens.products.ProductsScreen
 import com.hyperlocal.marketplace.presentation.screens.profile.ProfileScreen
+import com.hyperlocal.marketplace.presentation.screens.seller.AddProductScreen
+import com.hyperlocal.marketplace.presentation.screens.seller.EditProductScreen
 import com.hyperlocal.marketplace.presentation.screens.seller.SellerDashboardScreen
+import com.hyperlocal.marketplace.presentation.screens.seller.SellerProductsScreen
 import com.hyperlocal.marketplace.presentation.screens.shops.ShopsNearMeScreen
 
 @Composable
@@ -77,13 +80,15 @@ fun HyperlocalApp(
             composable("seller_dashboard") {
                 SellerDashboardScreen(navController = navController)
             }
-            composable("seller_add_product") {
-                // TODO: Implement AddProductScreen
-                SellerDashboardScreen(navController = navController)
+            composable("seller_products") {
+                SellerProductsScreen(navController = navController)
             }
-            composable("seller_edit_product/{productId}") {
-                // TODO: Implement EditProductScreen
-                SellerDashboardScreen(navController = navController)
+            composable("add_product") {
+                AddProductScreen(navController = navController)
+            }
+            composable("edit_product/{productId}") { backStackEntry ->
+                val productId = backStackEntry.arguments?.getString("productId") ?: ""
+                EditProductScreen(navController = navController, productId = productId)
             }
             composable("seller_edit_shop") {
                 // TODO: Implement EditShopScreen

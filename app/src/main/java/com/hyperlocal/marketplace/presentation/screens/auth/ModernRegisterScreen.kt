@@ -1,5 +1,6 @@
 package com.hyperlocal.marketplace.presentation.screens.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -13,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -45,7 +47,8 @@ fun ModernRegisterScreen(
     var shopName by remember { mutableStateOf("") }
     var shopAddress by remember { mutableStateOf("") }
     var shopCategory by remember { mutableStateOf("") }
-
+    
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(uiState.isRegistered) {
@@ -341,7 +344,20 @@ fun ModernRegisterScreen(
         Button(
             onClick = {
                 if (validateInputs(name, email, phone, password, confirmPassword)) {
-                    viewModel.registerWithEmailPassword(name, email, phone, password)
+                    if (showShopFields) {
+                        // Register as a seller with shop details
+                        Toast.makeText(context, "Creating shop account...", Toast.LENGTH_SHORT).show()
+                        // TODO: Implement shop registration with backend
+                        // For now, just register as a normal user and navigate to seller dashboard
+                        viewModel.registerWithEmailPassword(name, email, phone, password)
+                        // We'll handle navigation to seller dashboard in LaunchedEffect
+                    } else {
+                        // Register as a normal customer
+                        Toast.makeText(context, "Creating customer account...", Toast.LENGTH_SHORT).show()
+                        viewModel.registerWithEmailPassword(name, email, phone, password)
+                    }
+                } else {
+                    Toast.makeText(context, "Please fill all fields correctly", Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier

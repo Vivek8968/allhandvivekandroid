@@ -1,5 +1,6 @@
 package com.hyperlocal.marketplace.presentation.screens.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -13,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,7 +41,8 @@ fun ModernLoginScreen(
     var phoneNumber by remember { mutableStateOf("") }
     var verificationCode by remember { mutableStateOf("") }
     var isCodeSent by remember { mutableStateOf(false) }
-
+    
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(uiState.isLoggedIn) {
@@ -248,14 +251,19 @@ fun ModernLoginScreen(
             
             SocialLoginButton(
                 type = SocialLoginType.GOOGLE,
-                onClick = { viewModel.signInWithGoogle() }
+                onClick = { 
+                    Toast.makeText(context, "Signing in with Google...", Toast.LENGTH_SHORT).show()
+                    viewModel.signInWithGoogle() 
+                }
             )
             
             Spacer(modifier = Modifier.height(16.dp))
             
             SocialLoginButton(
                 type = SocialLoginType.APPLE,
-                onClick = { /* TODO: Implement Apple Sign-In */ }
+                onClick = { 
+                    Toast.makeText(context, "Apple Sign-In will be available soon!", Toast.LENGTH_SHORT).show()
+                }
             )
             
             Spacer(modifier = Modifier.height(24.dp))

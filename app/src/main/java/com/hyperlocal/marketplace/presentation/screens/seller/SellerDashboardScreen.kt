@@ -91,7 +91,7 @@ fun SellerDashboardScreen(
                 shop = uiState.shop!!,
                 products = uiState.products,
                 navController = navController,
-                onAddProduct = { navController.navigate("seller_add_product") }
+                onAddProduct = { navController.navigate("add_product") }
             )
         }
     }
@@ -374,6 +374,24 @@ fun ShopDashboardContent(
                     Text("Add Product")
                 }
             }
+            
+            // View All Products Button
+            Button(
+                onClick = { navController.navigate("seller_products") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Secondary
+                ),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ViewList,
+                    contentDescription = "View All Products",
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("View All Products")
+            }
         }
         
         if (products.isEmpty()) {
@@ -397,7 +415,7 @@ fun ShopDashboardContent(
                 val product = products[index]
                 ProductItem(
                     product = product,
-                    onEdit = { navController.navigate("seller_edit_product/${product.id}") },
+                    onEdit = { navController.navigate("edit_product/${product.id}") },
                     onDelete = { 
                         // Delete product
                     }
