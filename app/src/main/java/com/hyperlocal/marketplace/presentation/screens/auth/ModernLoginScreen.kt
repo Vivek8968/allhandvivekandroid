@@ -40,15 +40,15 @@ fun ModernLoginScreen(
     viewModel: AuthViewModel = hiltViewModel(),
     onGoogleSignInRequested: () -> Unit = {}
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     var showPhoneVerification by remember { mutableStateOf(false) }
     var phoneNumber by remember { mutableStateOf("") }
     var verificationCode by remember { mutableStateOf("") }
-    // Use the state from ViewModel instead of local state
-    val isCodeSent = uiState.isCodeSent
+    // Use local state for code sent status
+    var isCodeSent by remember { mutableStateOf(false) }
     
     val context = LocalContext.current
     val activity = context as ComponentActivity
-    val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(uiState.isLoggedIn) {
         if (uiState.isLoggedIn) {

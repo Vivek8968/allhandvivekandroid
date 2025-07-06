@@ -79,8 +79,13 @@ data class LoginResponseData(
     @SerializedName("user_id")
     val userId: Int,
     @SerializedName("role")
-    val role: UserRole
-)
+    val role: UserRole,
+    @SerializedName("user")
+    val user: User
+) {
+    // Convenience properties for backward compatibility
+    val token: String get() = accessToken
+}
 
 data class RegisterRequest(
     @SerializedName("name")

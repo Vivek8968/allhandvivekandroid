@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.compose.ui.platform.LocalContext
 import com.hyperlocal.marketplace.presentation.theme.Gray300
 import com.hyperlocal.marketplace.presentation.theme.Gray600
 import com.hyperlocal.marketplace.presentation.theme.Primary
@@ -33,6 +34,7 @@ fun LoginScreen(
     navController: NavController,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     var loginMethod by remember { mutableStateOf(LoginMethod.PHONE) }
     var phoneNumber by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -146,7 +148,7 @@ fun LoginScreen(
                     Button(
                         onClick = {
                             if (phoneNumber.isNotBlank()) {
-                                viewModel.sendPhoneVerificationCode(phoneNumber)
+                                viewModel.sendPhoneVerificationCode(phoneNumber, context as android.app.Activity)
                                 isCodeSent = true
                             }
                         },

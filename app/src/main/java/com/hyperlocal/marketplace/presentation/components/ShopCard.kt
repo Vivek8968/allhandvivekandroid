@@ -72,7 +72,7 @@ fun ShopCard(shop: Shop, onClick: () -> Unit = {}) {
                         modifier = Modifier.padding(top = 4.dp)
                     ) {
                         Text(
-                            text = shop.category,
+                            text = shop.category ?: "General",
                             style = MaterialTheme.typography.bodySmall,
                             color = Gray600
                         )
@@ -120,7 +120,7 @@ fun ShopCard(shop: Shop, onClick: () -> Unit = {}) {
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = shop.address,
+                            text = shop.address ?: "Address not available",
                             style = MaterialTheme.typography.bodySmall,
                             color = Gray600,
                             maxLines = 2,

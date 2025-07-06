@@ -288,14 +288,14 @@ fun ShopDashboardContent(
                     )
                     
                     Text(
-                        text = shop.category,
+                        text = shop.category ?: "General",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Gray600,
                         modifier = Modifier.padding(top = 4.dp)
                     )
                     
                     Text(
-                        text = shop.address,
+                        text = shop.address ?: "Address not available",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Gray600,
                         modifier = Modifier.padding(top = 4.dp)

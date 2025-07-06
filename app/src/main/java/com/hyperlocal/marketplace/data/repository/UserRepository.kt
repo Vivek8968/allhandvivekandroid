@@ -16,7 +16,13 @@ class UserRepository @Inject constructor(
     suspend fun registerUser(request: RegisterRequest): Flow<Resource<User>> = flow {
         try {
             emit(Resource.Loading())
-            val response = userApiService.registerUser(request)
+            // Convert RegisterRequest to FirebaseUserCreateRequest
+            val firebaseRequest = FirebaseUserCreateRequest(
+                name = request.name,
+                role = request.role,
+                firebaseToken = request.firebaseToken
+            )
+            val response = userApiService.registerUser(firebaseRequest)
             if (response.isSuccessful) {
                 response.body()?.let { apiResponse ->
                     if (apiResponse.status && apiResponse.data != null) {
@@ -33,10 +39,10 @@ class UserRepository @Inject constructor(
         }
     }
     
-    suspend fun loginUser(request: LoginRequest): Flow<Resource<LoginResponseData>> = flow {
+    suspend fun loginUser(request: FirebaseAuthRequest): Flow<Resource<LoginResponseData>> = flow {
         try {
             emit(Resource.Loading())
-            val response = userApiService.loginUser(request)
+            val response = userApiService.loginWithFirebaseToken(request)
             if (response.isSuccessful) {
                 response.body()?.let { apiResponse ->
                     if (apiResponse.status && apiResponse.data != null) {
@@ -53,7 +59,7 @@ class UserRepository @Inject constructor(
         }
     }
     
-    suspend fun verifyToken(token: String): Flow<Resource<User>> = flow {
+    suspend fun verifyToken(token: String): Flow<Resource<Map<String, Any>>> = flow {
         try {
             emit(Resource.Loading())
             val response = userApiService.verifyToken("Bearer $token")

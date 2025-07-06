@@ -168,9 +168,9 @@ fun ShopsTab(
                 val shop = shops[index]
                 AdminShopItem(
                     shop = shop,
-                    onApprove = { onApproveShop(shop.id) },
-                    onReject = { onRejectShop(shop.id) },
-                    onDelete = { onDeleteShop(shop.id) }
+                    onApprove = { onApproveShop(shop.id.toString()) },
+                    onReject = { onRejectShop(shop.id.toString()) },
+                    onDelete = { onDeleteShop(shop.id.toString()) }
                 )
             }
         }
@@ -297,14 +297,14 @@ fun AdminShopItem(
             )
             
             Text(
-                text = shop.category,
+                text = shop.category ?: "General",
                 style = MaterialTheme.typography.bodySmall,
                 color = Gray600,
                 modifier = Modifier.padding(top = 2.dp)
             )
             
             Text(
-                text = shop.address,
+                text = shop.address ?: "Address not available",
                 style = MaterialTheme.typography.bodySmall,
                 color = Gray600,
                 modifier = Modifier.padding(top = 4.dp)

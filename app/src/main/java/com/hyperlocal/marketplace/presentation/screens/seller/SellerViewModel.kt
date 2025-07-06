@@ -34,12 +34,12 @@ class SellerViewModel @Inject constructor(
                 
                 val token = userPreferencesRepository.authToken.first()
                 if (token != null) {
-                    val shopResponse = sellerRepository.getSellerShop("Bearer $token")
+                    val shopResponse = sellerRepository.getMyShop(token)
                     if (shopResponse.isSuccessful && shopResponse.body() != null) {
                         val shop = shopResponse.body()!!.data
                         if (shop != null) {
                             // Load products for this shop
-                            val productsResponse = sellerRepository.getSellerProducts("Bearer $token")
+                            val productsResponse = sellerRepository.getVendorProducts(token)
                             if (productsResponse.isSuccessful && productsResponse.body() != null) {
                                 val products = productsResponse.body()!!.data ?: emptyList()
                                 _uiState.update { it.copy(
@@ -94,11 +94,10 @@ class SellerViewModel @Inject constructor(
                         description = description,
                         address = address,
                         latitude = 28.6139, // Default location (can be replaced with actual location)
-                        longitude = 77.2090,
-                        category = category
+                        longitude = 77.2090
                     )
                     
-                    val response = sellerRepository.createShop("Bearer $token", request)
+                    val response = sellerRepository.createShop(token, request)
                     if (response.isSuccessful && response.body() != null) {
                         val shop = response.body()!!.data
                         if (shop != null) {
@@ -149,17 +148,14 @@ class SellerViewModel @Inject constructor(
                 if (token != null) {
                     val shopId = _uiState.value.shop?.id
                     if (shopId != null) {
-                        val request = com.hyperlocal.marketplace.data.models.ProductCreateRequest(
-                            name = name,
-                            description = description,
-                            price = price,
-                            category = category,
-                            inStock = true,
-                            quantity = quantity,
-                            unit = unit
+                        // TODO: API only supports adding products from catalog, not creating new products
+                        // Need to implement product creation API endpoint or use catalog-based approach
+                        val request = com.hyperlocal.marketplace.data.models.AddProductFromCatalogRequest(
+                            catalogItemId = 1, // TODO: Get from catalog selection
+                            quantity = quantity
                         )
                         
-                        val response = sellerRepository.addProduct("Bearer $token", shopId, request)
+                        val response = sellerRepository.addProductFromCatalog(token, request)
                         if (response.isSuccessful && response.body() != null) {
                             // Reload products
                             loadSellerShop()
@@ -218,7 +214,7 @@ class SellerViewModel @Inject constructor(
                             "inStock" to inStock
                         )
                         
-                        val response = sellerRepository.updateProduct("Bearer $token", shopId, productId, request)
+                        val response = sellerRepository.updateInventoryItem(token, productId.toInt(), request)
                         if (response.isSuccessful) {
                             // Reload products
                             loadSellerShop()
@@ -258,7 +254,7 @@ class SellerViewModel @Inject constructor(
                 if (token != null) {
                     val shopId = _uiState.value.shop?.id
                     if (shopId != null) {
-                        val response = sellerRepository.deleteProduct("Bearer $token", shopId, productId)
+                        val response = sellerRepository.deleteInventoryItem(token, productId.toInt())
                         if (response.isSuccessful) {
                             // Reload products
                             loadSellerShop()

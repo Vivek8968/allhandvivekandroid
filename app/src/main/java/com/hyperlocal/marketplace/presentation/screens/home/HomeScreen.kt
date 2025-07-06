@@ -299,14 +299,14 @@ fun ShopCard(shop: Shop, onClick: () -> Unit = {}) {
                     )
                     
                     Text(
-                        text = shop.category,
+                        text = shop.category ?: "General",
                         style = MaterialTheme.typography.bodySmall,
                         color = Gray600,
                         modifier = Modifier.padding(top = 2.dp)
                     )
                     
                     Text(
-                        text = shop.address,
+                        text = shop.address ?: "Address not available",
                         style = MaterialTheme.typography.bodySmall,
                         color = Gray600,
                         modifier = Modifier.padding(top = 4.dp),
@@ -352,7 +352,8 @@ fun ShopCard(shop: Shop, onClick: () -> Unit = {}) {
 fun getSampleShops(): List<Shop> {
     return listOf(
         Shop(
-            id = "1",
+            id = 1,
+            userId = 1,
             name = "Fresh Mart Grocery",
             description = "Your neighborhood grocery store",
             address = "123 Main Street, Downtown",
@@ -360,14 +361,17 @@ fun getSampleShops(): List<Shop> {
             longitude = -74.0060,
             distance = 0.5,
             distanceFormatted = "0.5 km away",
-            category = "Grocery",
-            rating = 4.5,
+            whatsappNumber = "+919876543210",
             imageUrl = null,
-            ownerId = "owner1",
-            whatsappNumber = "+919876543210"
+            bannerUrl = null,
+            createdAt = "2024-01-01T00:00:00Z",
+            updatedAt = "2024-01-01T00:00:00Z",
+            category = "Grocery",
+            rating = 4.5
         ),
         Shop(
-            id = "2",
+            id = 2,
+            userId = 2,
             name = "Tech Hub Electronics",
             description = "Latest gadgets and electronics",
             address = "456 Tech Avenue, Silicon Valley",
@@ -375,14 +379,17 @@ fun getSampleShops(): List<Shop> {
             longitude = -73.9851,
             distance = 1.2,
             distanceFormatted = "1.2 km away",
-            category = "Electronics",
-            rating = 4.2,
+            whatsappNumber = "+919876543211",
             imageUrl = null,
-            ownerId = "owner2",
-            whatsappNumber = "+919876543211"
+            bannerUrl = null,
+            createdAt = "2024-01-01T00:00:00Z",
+            updatedAt = "2024-01-01T00:00:00Z",
+            category = "Electronics",
+            rating = 4.2
         ),
         Shop(
-            id = "3",
+            id = 3,
+            userId = 3,
             name = "Bella's Fashion Boutique",
             description = "Trendy clothing and accessories",
             address = "789 Fashion Street, Uptown",
@@ -390,14 +397,17 @@ fun getSampleShops(): List<Shop> {
             longitude = -73.9712,
             distance = 2.1,
             distanceFormatted = "2.1 km away",
-            category = "Clothing",
-            rating = 4.8,
+            whatsappNumber = "+919876543212",
             imageUrl = null,
-            ownerId = "owner3",
-            whatsappNumber = "+919876543212"
+            bannerUrl = null,
+            createdAt = "2024-01-01T00:00:00Z",
+            updatedAt = "2024-01-01T00:00:00Z",
+            category = "Clothing",
+            rating = 4.8
         ),
         Shop(
-            id = "4",
+            id = 4,
+            userId = 4,
             name = "Foodie's Paradise",
             description = "Delicious food from around the world",
             address = "101 Culinary Avenue, Food District",
@@ -405,14 +415,17 @@ fun getSampleShops(): List<Shop> {
             longitude = -73.9855,
             distance = 0.8,
             distanceFormatted = "0.8 km away",
-            category = "Food",
-            rating = 4.7,
+            whatsappNumber = "+919876543213",
             imageUrl = null,
-            ownerId = "owner4",
-            whatsappNumber = "+919876543213"
+            bannerUrl = null,
+            createdAt = "2024-01-01T00:00:00Z",
+            updatedAt = "2024-01-01T00:00:00Z",
+            category = "Food",
+            rating = 4.7
         ),
         Shop(
-            id = "5",
+            id = 5,
+            userId = 5,
             name = "Health & Wellness Pharmacy",
             description = "Your health is our priority",
             address = "202 Wellness Road, Medical Center",
@@ -420,11 +433,13 @@ fun getSampleShops(): List<Shop> {
             longitude = -73.9750,
             distance = 1.5,
             distanceFormatted = "1.5 km away",
-            category = "Pharmacy",
-            rating = 4.3,
+            whatsappNumber = "+919876543214",
             imageUrl = null,
-            ownerId = "owner5",
-            whatsappNumber = "+919876543214"
+            bannerUrl = null,
+            createdAt = "2024-01-01T00:00:00Z",
+            updatedAt = "2024-01-01T00:00:00Z",
+            category = "Pharmacy",
+            rating = 4.3
         )
     )
 }
