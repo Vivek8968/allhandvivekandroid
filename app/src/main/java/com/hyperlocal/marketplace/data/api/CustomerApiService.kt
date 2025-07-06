@@ -7,18 +7,18 @@ import retrofit2.http.*
 
 interface CustomerApiService {
     
-    @GET(Config.Endpoints.GET_ALL_SHOPS)
+    @GET("shops")
     suspend fun getAllShops(
         @Query("latitude") latitude: Double? = null,
         @Query("longitude") longitude: Double? = null
     ): Response<ApiResponse<List<Shop>>>
     
-    @GET(Config.Endpoints.GET_SHOP_BY_ID)
+    @GET("shops/{id}")
     suspend fun getShopById(
         @Path("id") shopId: String
     ): Response<ApiResponse<Shop>>
     
-    @GET(Config.Endpoints.GET_SHOP_PRODUCTS)
+    @GET("shops/{id}/products")
     suspend fun getShopProducts(
         @Path("id") shopId: String,
         @Query("search") search: String? = null,

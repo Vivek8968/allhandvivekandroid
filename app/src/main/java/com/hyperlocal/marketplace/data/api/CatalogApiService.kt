@@ -7,16 +7,16 @@ import retrofit2.http.*
 
 interface CatalogApiService {
     
-    @GET(Config.Endpoints.GET_CATALOG)
+    @GET("items")
     suspend fun getCatalog(
         @Query("search") search: String? = null,
         @Query("category") category: String? = null
     ): Response<ApiResponse<List<CatalogItem>>>
     
-    @GET(Config.Endpoints.GET_CATALOG_CATEGORIES)
+    @GET("categories")
     suspend fun getCatalogCategories(): Response<ApiResponse<List<String>>>
     
-    @GET(Config.Endpoints.GET_PRODUCT_BY_ID)
+    @GET("items/{id}")
     suspend fun getProductById(
         @Path("id") productId: String
     ): Response<ApiResponse<Product>>

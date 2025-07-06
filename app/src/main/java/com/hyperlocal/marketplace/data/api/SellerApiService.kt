@@ -9,54 +9,54 @@ import retrofit2.http.*
 interface SellerApiService {
     
     // Shop Management Endpoints
-    @POST(Config.Endpoints.CREATE_SHOP)
+    @POST("shops")
     suspend fun createShop(
         @Header("Authorization") token: String,
         @Body request: ShopCreateRequest
     ): Response<ApiResponse<Shop>>
     
-    @GET(Config.Endpoints.GET_MY_SHOP)
+    @GET("shops/my")
     suspend fun getMyShop(
         @Header("Authorization") token: String
     ): Response<ApiResponse<Shop>>
     
-    @PUT(Config.Endpoints.UPDATE_MY_SHOP)
+    @PUT("shops/my")
     suspend fun updateMyShop(
         @Header("Authorization") token: String,
         @Body request: ShopUpdateRequest
     ): Response<ApiResponse<Shop>>
     
-    @GET(Config.Endpoints.GET_SHOP_BY_ID)
+    @GET("shops/{id}")
     suspend fun getShopById(
         @Path("id") shopId: Int
     ): Response<ApiResponse<Shop>>
     
-    @POST(Config.Endpoints.UPLOAD_SHOP_IMAGE)
+    @POST("upload/shop-image")
     suspend fun uploadShopImage(
         @Header("Authorization") token: String,
         @Query("field_name") fieldName: String
     ): Response<ApiResponse<ImageUploadResponse>>
     
     // Inventory Management Endpoints
-    @GET(Config.Endpoints.GET_VENDOR_PRODUCTS)
+    @GET("inventory")
     suspend fun getVendorProducts(
         @Header("Authorization") token: String
     ): Response<ApiResponse<List<Product>>>
     
-    @POST(Config.Endpoints.ADD_PRODUCT_FROM_CATALOG)
+    @POST("inventory/add-from-catalog")
     suspend fun addProductFromCatalog(
         @Header("Authorization") token: String,
         @Body request: AddProductFromCatalogRequest
     ): Response<ApiResponse<Product>>
     
-    @PUT(Config.Endpoints.UPDATE_INVENTORY_ITEM)
+    @PUT("inventory/{id}")
     suspend fun updateInventoryItem(
         @Header("Authorization") token: String,
         @Path("id") itemId: Int,
         @Body request: Map<String, Any>
     ): Response<ApiResponse<Product>>
     
-    @DELETE(Config.Endpoints.DELETE_INVENTORY_ITEM)
+    @DELETE("inventory/{id}")
     suspend fun deleteInventoryItem(
         @Header("Authorization") token: String,
         @Path("id") itemId: Int

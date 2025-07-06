@@ -7,32 +7,32 @@ import retrofit2.http.*
 
 interface UserApiService {
     
-    @POST(Config.Endpoints.REGISTER)
+    @POST("auth/register")
     suspend fun registerUser(
         @Body request: FirebaseUserCreateRequest
     ): Response<ApiResponse<User>>
     
-    @POST(Config.Endpoints.LOGIN)
+    @POST("auth/firebase-login")
     suspend fun loginWithFirebaseToken(
         @Body request: FirebaseAuthRequest
     ): Response<ApiResponse<LoginResponseData>>
     
-    @GET(Config.Endpoints.VERIFY_TOKEN)
+    @POST("auth/verify-token")
     suspend fun verifyToken(
         @Header("Authorization") token: String
     ): Response<ApiResponse<Map<String, Any>>>
     
-    @POST(Config.Endpoints.REFRESH_TOKEN)
+    @POST("auth/refresh-token")
     suspend fun refreshToken(
         @Header("Authorization") token: String
     ): Response<ApiResponse<LoginResponseData>>
     
-    @GET(Config.Endpoints.GET_USER_PROFILE)
+    @GET("profile")
     suspend fun getUserProfile(
         @Header("Authorization") token: String
     ): Response<ApiResponse<User>>
     
-    @PUT(Config.Endpoints.UPDATE_USER_PROFILE)
+    @PUT("profile")
     suspend fun updateUserProfile(
         @Header("Authorization") token: String,
         @Body request: Map<String, Any>

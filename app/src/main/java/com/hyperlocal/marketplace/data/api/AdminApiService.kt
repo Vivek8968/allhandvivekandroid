@@ -7,17 +7,17 @@ import retrofit2.http.*
 
 interface AdminApiService {
     
-    @GET(Config.Endpoints.ADMIN_STATS)
+    @GET("stats")
     suspend fun getStats(
         @Header("Authorization") token: String
     ): Response<ApiResponse<Map<String, Int>>>
     
-    @GET(Config.Endpoints.ADMIN_USERS)
+    @GET("users")
     suspend fun getAllUsers(
         @Header("Authorization") token: String
     ): Response<ApiResponse<List<User>>>
     
-    @GET(Config.Endpoints.ADMIN_SHOPS)
+    @GET("shops")
     suspend fun getAllShops(
         @Header("Authorization") token: String
     ): Response<ApiResponse<List<Shop>>>
