@@ -9,6 +9,7 @@ import com.google.firebase.ktx.Firebase
 import com.hyperlocal.marketplace.data.api.UserApiService
 import com.hyperlocal.marketplace.data.models.ApiResponse
 import com.hyperlocal.marketplace.data.models.FirebaseAuthRequest
+import com.hyperlocal.marketplace.data.models.FirebaseUserCreateRequest
 import com.hyperlocal.marketplace.data.models.LoginResponseData
 import com.hyperlocal.marketplace.data.models.RegisterRequest
 import com.hyperlocal.marketplace.data.models.User
@@ -73,7 +74,7 @@ class AuthRepository @Inject constructor(
         return userApiService.loginWithFirebaseToken(request)
     }
 
-    suspend fun verifyToken(token: String): Response<ApiResponse<User>> {
+    suspend fun verifyToken(token: String): Response<ApiResponse<Map<String, Any>>> {
         return userApiService.verifyToken("Bearer $token")
     }
 

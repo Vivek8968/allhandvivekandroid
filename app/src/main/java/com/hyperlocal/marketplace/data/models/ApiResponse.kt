@@ -24,33 +24,7 @@ data class LoginRequest(
     val phone: String
 )
 
-/**
- * Registration request
- */
-data class RegisterRequest(
-    @SerializedName("name")
-    val name: String,
-    
-    @SerializedName("email")
-    val email: String,
-    
-    @SerializedName("phone")
-    val phone: String,
-    
-    @SerializedName("role")
-    val role: String
-)
-
-/**
- * Login response data
- */
-data class LoginResponseData(
-    @SerializedName("token")
-    val token: String,
-    
-    @SerializedName("user")
-    val user: User
-)
+// Note: RegisterRequest and LoginResponseData are now defined in User.kt to avoid duplication
 
 
 
@@ -87,12 +61,20 @@ data class ProductCreateRequest(
  * Add product from catalog request
  */
 data class AddProductFromCatalogRequest(
-    @SerializedName("catalogId")
-    val catalogId: String,
-    
-    @SerializedName("shopId")
-    val shopId: String,
+    @SerializedName("catalog_item_id")
+    val catalogItemId: Int,
     
     @SerializedName("quantity")
     val quantity: Int
+)
+
+/**
+ * Image upload response
+ */
+data class ImageUploadResponse(
+    @SerializedName("url")
+    val url: String,
+    
+    @SerializedName("filename")
+    val filename: String
 )

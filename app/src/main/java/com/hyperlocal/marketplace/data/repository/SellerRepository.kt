@@ -11,35 +11,39 @@ class SellerRepository @Inject constructor(
     private val sellerApiService: SellerApiService
 ) {
     
-    suspend fun getSellerShop(token: String): Response<ApiResponse<Shop>> {
-        return sellerApiService.getVendorShop(token)
+    suspend fun getMyShop(token: String): Response<ApiResponse<Shop>> {
+        return sellerApiService.getMyShop("Bearer $token")
     }
     
     suspend fun createShop(token: String, request: ShopCreateRequest): Response<ApiResponse<Shop>> {
-        return sellerApiService.createVendorShop(token, request)
+        return sellerApiService.createShop("Bearer $token", request)
     }
     
-    suspend fun updateShop(token: String, request: ShopUpdateRequest): Response<ApiResponse<Shop>> {
-        return sellerApiService.updateVendorShop(token, request)
+    suspend fun updateMyShop(token: String, request: ShopUpdateRequest): Response<ApiResponse<Shop>> {
+        return sellerApiService.updateMyShop("Bearer $token", request)
     }
     
-    suspend fun getSellerProducts(token: String): Response<ApiResponse<List<Product>>> {
-        return sellerApiService.getVendorProducts(token)
+    suspend fun getShopById(shopId: Int): Response<ApiResponse<Shop>> {
+        return sellerApiService.getShopById(shopId)
     }
     
-    suspend fun addProduct(token: String, shopId: String, request: ProductCreateRequest): Response<ApiResponse<Product>> {
-        return sellerApiService.addProductToShop(token, shopId, request)
+    suspend fun uploadShopImage(token: String, fieldName: String): Response<ApiResponse<ImageUploadResponse>> {
+        return sellerApiService.uploadShopImage("Bearer $token", fieldName)
     }
     
-    suspend fun updateProduct(token: String, shopId: String, productId: String, request: Map<String, Any>): Response<ApiResponse<Product>> {
-        return sellerApiService.updateShopProduct(token, shopId, productId, request)
-    }
-    
-    suspend fun deleteProduct(token: String, shopId: String, productId: String): Response<ApiResponse<Any>> {
-        return sellerApiService.deleteShopProduct(token, shopId, productId)
+    suspend fun getVendorProducts(token: String): Response<ApiResponse<List<Product>>> {
+        return sellerApiService.getVendorProducts("Bearer $token")
     }
     
     suspend fun addProductFromCatalog(token: String, request: AddProductFromCatalogRequest): Response<ApiResponse<Product>> {
-        return sellerApiService.addProductFromCatalog(token, request)
+        return sellerApiService.addProductFromCatalog("Bearer $token", request)
+    }
+    
+    suspend fun updateInventoryItem(token: String, itemId: Int, request: Map<String, Any>): Response<ApiResponse<Product>> {
+        return sellerApiService.updateInventoryItem("Bearer $token", itemId, request)
+    }
+    
+    suspend fun deleteInventoryItem(token: String, itemId: Int): Response<ApiResponse<Any>> {
+        return sellerApiService.deleteInventoryItem("Bearer $token", itemId)
     }
 }

@@ -29,22 +29,28 @@ class GoogleSignInHelper @Inject constructor() {
      * 
      * @param context Application context
      * @param webClientId Google Web Client ID from Firebase console
+     * @return true if initialized successfully, false if Web Client ID is invalid
      */
-    fun initialize(context: Context, webClientId: String) {
+    fun initialize(context: Context, webClientId: String): Boolean {
         // Check if we have a valid Web Client ID
-        if (webClientId == "YOUR_ACTUAL_WEB_CLIENT_ID_HERE" || webClientId.contains("placeholder")) {
-            throw IllegalArgumentException(
-                "Invalid Firebase Web Client ID. Please replace with actual Web Client ID from Firebase Console."
-            )
+        if (webClientId == "YOUR_ACTUAL_WEB_CLIENT_ID_HERE" || 
+            webClientId.contains("placeholder") || 
+            webClientId.isBlank()) {
+            return false
         }
         
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(webClientId)
-            .requestEmail()
-            .requestProfile()
-            .build()
-        
-        googleSignInClient = GoogleSignIn.getClient(context, gso)
+        try {
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(webClientId)
+                .requestEmail()
+                .requestProfile()
+                .build()
+            
+            googleSignInClient = GoogleSignIn.getClient(context, gso)
+            return true
+        } catch (e: Exception) {
+            return false
+        }
     }
     
     /**

@@ -7,13 +7,15 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Shop(
     @SerializedName("id")
-    val id: String,
+    val id: Int,
+    @SerializedName("user_id")
+    val userId: Int,
     @SerializedName("name")
     val name: String,
     @SerializedName("description")
     val description: String?,
     @SerializedName("address")
-    val address: String,
+    val address: String?,
     @SerializedName("latitude")
     val latitude: Double,
     @SerializedName("longitude")
@@ -22,44 +24,41 @@ data class Shop(
     val distance: Double? = null,
     @SerializedName("distanceFormatted")
     val distanceFormatted: String? = null,
+    @SerializedName("whatsapp_number")
+    val whatsappNumber: String?,
+    @SerializedName("image_url")
+    val imageUrl: String?,
+    @SerializedName("banner_url")
+    val bannerUrl: String?,
+    @SerializedName("created_at")
+    val createdAt: String,
+    @SerializedName("updated_at")
+    val updatedAt: String,
+    // Legacy fields for backward compatibility
     @SerializedName("category")
-    val category: String,
+    val category: String? = null,
     @SerializedName("rating")
     val rating: Double = 0.0,
-    @SerializedName("imageUrl")
-    val imageUrl: String?,
-    @SerializedName("ownerId")
-    val ownerId: String,
     @SerializedName("isOpen")
     val isOpen: Boolean = true,
     @SerializedName("openingTime")
     val openingTime: String = "09:00",
     @SerializedName("closingTime")
-    val closingTime: String = "21:00",
-    @SerializedName("whatsappNumber")
-    val whatsappNumber: String? = "+919999999999" // Default for demo purposes
+    val closingTime: String = "21:00"
 ) : Parcelable
 
 data class ShopCreateRequest(
     @SerializedName("name")
     val name: String,
     @SerializedName("description")
-    val description: String,
+    val description: String?,
     @SerializedName("address")
-    val address: String,
+    val address: String?,
     @SerializedName("latitude")
     val latitude: Double,
     @SerializedName("longitude")
     val longitude: Double,
-    @SerializedName("category")
-    val category: String,
-    @SerializedName("imageUrl")
-    val imageUrl: String? = null,
-    @SerializedName("openingTime")
-    val openingTime: String = "09:00",
-    @SerializedName("closingTime")
-    val closingTime: String = "21:00",
-    @SerializedName("whatsappNumber")
+    @SerializedName("whatsapp_number")
     val whatsappNumber: String? = null
 )
 

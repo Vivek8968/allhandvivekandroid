@@ -73,19 +73,22 @@ class AuthViewModel @Inject constructor(
             override fun onVerificationFailed(e: FirebaseException) {
                 val errorMessage = when {
                     e.message?.contains("billing_not_enabled") == true -> 
-                        "Phone authentication is not enabled. Please contact support."
+                        "Phone authentication is temporarily unavailable due to billing configuration. Please use email/password authentication instead."
                     e.message?.contains("invalid-phone-number") == true -> 
-                        "Invalid phone number format. Please include country code."
+                        "Invalid phone number format. Please include country code (+1, +91, etc.)."
                     e.message?.contains("too-many-requests") == true -> 
-                        "Too many requests. Please try again later."
+                        "Too many requests. Please try again in a few minutes."
                     e.message?.contains("app-not-authorized") == true -> 
-                        "App not authorized for phone authentication."
-                    else -> e.message ?: "Phone verification failed"
+                        "App not authorized for phone authentication. Please contact support."
+                    e.message?.contains("quota-exceeded") == true -> 
+                        "SMS quota exceeded. Please try again later or use email authentication."
+                    else -> "Phone verification failed: ${e.message ?: "Unknown error"}"
                 }
                 
                 _uiState.update { it.copy(
                     isLoading = false,
-                    error = errorMessage
+                    error = errorMessage,
+                    showAlternativeAuth = e.message?.contains("billing_not_enabled") == true
                 ) }
             }
             
@@ -335,7 +338,19 @@ class AuthViewModel @Inject constructor(
     }
     
     // Google Sign-In Authentication
+    fun isGoogleSignInAvailable(): Boolean {
+        return googleSignInHelper.isConfigured()
+    }
+    
     fun signInWithGoogle() {
+        if (!isGoogleSignInAvailable()) {
+            _uiState.update { it.copy(
+                isLoading = false,
+                error = "Google Sign-In is not configured. Please use email/password authentication."
+            ) }
+            return
+        }
+        
         _uiState.update { it.copy(isLoading = true, error = "") }
         
         // The actual sign-in intent is launched from MainActivity
@@ -427,5 +442,6 @@ data class AuthUiState(
     val userName: String? = null,
     val userEmail: String? = null,
     val userPhone: String? = null,
-    val error: String = ""
+    val error: String = "",
+    val showAlternativeAuth: Boolean = false
 )

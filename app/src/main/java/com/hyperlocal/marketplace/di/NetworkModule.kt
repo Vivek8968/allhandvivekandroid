@@ -22,18 +22,43 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = if (Config.IS_DEBUG) {
+            level = if (Config.Debug.ENABLE_NETWORK_LOGGING) {
                 HttpLoggingInterceptor.Level.BODY
             } else {
                 HttpLoggingInterceptor.Level.NONE
             }
         }
         
+        // Custom interceptor for debugging and error handling
+        val debugInterceptor = okhttp3.Interceptor { chain ->
+            val request = chain.request()
+            
+            if (Config.Debug.ENABLE_API_LOGGING) {
+                println("🌐 API Request: ${request.method} ${request.url}")
+                request.body?.let { body ->
+                    println("📤 Request Body: $body")
+                }
+            }
+            
+            val response = chain.proceed(request)
+            
+            if (Config.Debug.ENABLE_API_LOGGING) {
+                println("📥 API Response: ${response.code} ${response.message}")
+                if (!response.isSuccessful) {
+                    println("❌ Error Response: ${response.body?.string()}")
+                }
+            }
+            
+            response
+        }
+        
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(debugInterceptor)
             .connectTimeout(Config.Network.CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .readTimeout(Config.Network.READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .writeTimeout(Config.Network.WRITE_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
             .build()
     }
     

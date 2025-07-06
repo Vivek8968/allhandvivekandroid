@@ -54,6 +54,13 @@
             android:theme="@style/Theme.HyperlocalMarketplace">
         </activity>
         
+        <activity
+            android:name=".DebugActivity"
+            android:exported="true"
+            android:label="Debug Console"
+            android:theme="@style/Theme.HyperlocalMarketplace">
+        </activity>
+        
         <!-- Firebase Auth -->
         <meta-data
             android:name="com.google.firebase.auth.api_key"
