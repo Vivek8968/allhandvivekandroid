@@ -28,6 +28,7 @@ import com.hyperlocal.marketplace.presentation.components.SocialLoginType
 import com.hyperlocal.marketplace.presentation.theme.Gray300
 import com.hyperlocal.marketplace.presentation.theme.Gray600
 import com.hyperlocal.marketplace.presentation.theme.Primary
+import com.hyperlocal.marketplace.data.models.UserRole
 
 /**
  * Modern Myntra-style register screen
@@ -53,10 +54,24 @@ fun ModernRegisterScreen(
 
     LaunchedEffect(uiState.isRegistered) {
         if (uiState.isRegistered) {
-            Toast.makeText(context, "Registration successful! Please login.", Toast.LENGTH_LONG).show()
-            navController.navigate("login") {
-                popUpTo("register") { inclusive = true }
+            Toast.makeText(context, "Registration successful!", Toast.LENGTH_LONG).show()
+            // Navigate based on user role
+            if (uiState.userRole == "SELLER") {
+                navController.navigate("seller_dashboard") {
+                    popUpTo("register") { inclusive = true }
+                }
+            } else {
+                navController.navigate("customer_dashboard") {
+                    popUpTo("register") { inclusive = true }
+                }
             }
+        }
+    }
+    
+    // Show error messages
+    LaunchedEffect(uiState.error) {
+        if (uiState.error.isNotEmpty()) {
+            Toast.makeText(context, uiState.error, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -344,23 +359,19 @@ fun ModernRegisterScreen(
         // Register Button
         Button(
             onClick = {
-                if (validateInputs(name, email, phone, password, confirmPassword)) {
+                if (!uiState.isLoading && validateInputs(name, email, phone, password, confirmPassword)) {
                     if (showShopFields) {
                         // Register as a seller with shop details
-                        Toast.makeText(context, "Creating shop account...", Toast.LENGTH_SHORT).show()
-                        // TODO: Implement shop registration with backend
-                        // For now, just register as a normal user and navigate to seller dashboard
-                        viewModel.registerWithEmailPassword(name, email, phone, password)
-                        // We'll handle navigation to seller dashboard in LaunchedEffect
+                        viewModel.registerWithEmailPassword(name, email, phone, password, UserRole.SELLER)
                     } else {
                         // Register as a normal customer
-                        Toast.makeText(context, "Creating customer account...", Toast.LENGTH_SHORT).show()
-                        viewModel.registerWithEmailPassword(name, email, phone, password)
+                        viewModel.registerWithEmailPassword(name, email, phone, password, UserRole.CUSTOMER)
                     }
-                } else {
+                } else if (!validateInputs(name, email, phone, password, confirmPassword)) {
                     Toast.makeText(context, "Please fill all fields correctly", Toast.LENGTH_SHORT).show()
                 }
             },
+            enabled = !uiState.isLoading,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
@@ -369,11 +380,18 @@ fun ModernRegisterScreen(
                 containerColor = Primary
             )
         ) {
-            Text(
-                text = if (showShopFields) "Create Shop" else "Register",
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
-            )
+            if (uiState.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            } else {
+                Text(
+                    text = if (showShopFields) "Create Shop" else "Register",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))

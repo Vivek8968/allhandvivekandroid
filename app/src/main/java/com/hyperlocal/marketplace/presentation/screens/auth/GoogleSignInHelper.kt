@@ -31,12 +31,27 @@ class GoogleSignInHelper @Inject constructor() {
      * @param webClientId Google Web Client ID from Firebase console
      */
     fun initialize(context: Context, webClientId: String) {
+        // Check if we have a valid Web Client ID
+        if (webClientId == "YOUR_ACTUAL_WEB_CLIENT_ID_HERE" || webClientId.contains("placeholder")) {
+            throw IllegalArgumentException(
+                "Invalid Firebase Web Client ID. Please replace with actual Web Client ID from Firebase Console."
+            )
+        }
+        
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(webClientId)
             .requestEmail()
+            .requestProfile()
             .build()
         
         googleSignInClient = GoogleSignIn.getClient(context, gso)
+    }
+    
+    /**
+     * Check if Google Sign-In is properly configured
+     */
+    fun isConfigured(): Boolean {
+        return ::googleSignInClient.isInitialized
     }
     
     /**

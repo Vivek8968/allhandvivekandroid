@@ -103,3 +103,12 @@ data class LocationQuery(
     @SerializedName("radius")
     val radius: Double = 10.0 // Default 10km radius
 )
+
+data class ImageUploadResponse(
+    @SerializedName("presigned_url")
+    val presignedUrl: String,
+    @SerializedName("image_url")
+    val imageUrl: String,
+    @SerializedName("field_name")
+    val fieldName: String
+)

@@ -8,23 +8,36 @@ import retrofit2.http.*
 
 interface SellerApiService {
     
-    @GET(Config.Endpoints.GET_VENDOR_SHOP)
-    suspend fun getVendorShop(
-        @Header("Authorization") token: String
-    ): Response<ApiResponse<Shop>>
-    
-    @POST(Config.Endpoints.CREATE_VENDOR_SHOP)
-    suspend fun createVendorShop(
+    // Shop Management Endpoints
+    @POST(Config.Endpoints.CREATE_SHOP)
+    suspend fun createShop(
         @Header("Authorization") token: String,
         @Body request: ShopCreateRequest
     ): Response<ApiResponse<Shop>>
     
-    @PUT(Config.Endpoints.UPDATE_VENDOR_SHOP)
-    suspend fun updateVendorShop(
+    @GET(Config.Endpoints.GET_MY_SHOP)
+    suspend fun getMyShop(
+        @Header("Authorization") token: String
+    ): Response<ApiResponse<Shop>>
+    
+    @PUT(Config.Endpoints.UPDATE_MY_SHOP)
+    suspend fun updateMyShop(
         @Header("Authorization") token: String,
         @Body request: ShopUpdateRequest
     ): Response<ApiResponse<Shop>>
     
+    @GET(Config.Endpoints.GET_SHOP_BY_ID)
+    suspend fun getShopById(
+        @Path("id") shopId: Int
+    ): Response<ApiResponse<Shop>>
+    
+    @POST(Config.Endpoints.UPLOAD_SHOP_IMAGE)
+    suspend fun uploadShopImage(
+        @Header("Authorization") token: String,
+        @Query("field_name") fieldName: String
+    ): Response<ApiResponse<ImageUploadResponse>>
+    
+    // Inventory Management Endpoints
     @GET(Config.Endpoints.GET_VENDOR_PRODUCTS)
     suspend fun getVendorProducts(
         @Header("Authorization") token: String
@@ -36,32 +49,16 @@ interface SellerApiService {
         @Body request: AddProductFromCatalogRequest
     ): Response<ApiResponse<Product>>
     
-    // Generic shop and product endpoints
-    @POST(Config.Endpoints.CREATE_SHOP)
-    suspend fun createShop(
+    @PUT(Config.Endpoints.UPDATE_INVENTORY_ITEM)
+    suspend fun updateInventoryItem(
         @Header("Authorization") token: String,
-        @Body request: ShopCreateRequest
-    ): Response<ApiResponse<Shop>>
-    
-    @POST(Config.Endpoints.ADD_PRODUCT_TO_SHOP)
-    suspend fun addProductToShop(
-        @Header("Authorization") token: String,
-        @Path("id") shopId: String,
-        @Body request: ProductCreateRequest
-    ): Response<ApiResponse<Product>>
-    
-    @PUT(Config.Endpoints.UPDATE_SHOP_PRODUCT)
-    suspend fun updateShopProduct(
-        @Header("Authorization") token: String,
-        @Path("shop_id") shopId: String,
-        @Path("product_id") productId: String,
+        @Path("id") itemId: Int,
         @Body request: Map<String, Any>
     ): Response<ApiResponse<Product>>
     
-    @DELETE(Config.Endpoints.DELETE_SHOP_PRODUCT)
-    suspend fun deleteShopProduct(
+    @DELETE(Config.Endpoints.DELETE_INVENTORY_ITEM)
+    suspend fun deleteInventoryItem(
         @Header("Authorization") token: String,
-        @Path("shop_id") shopId: String,
-        @Path("product_id") productId: String
+        @Path("id") itemId: Int
     ): Response<ApiResponse<Any>>
 }

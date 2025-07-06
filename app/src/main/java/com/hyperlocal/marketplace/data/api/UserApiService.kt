@@ -9,18 +9,23 @@ interface UserApiService {
     
     @POST(Config.Endpoints.REGISTER)
     suspend fun registerUser(
-        @Body request: RegisterRequest
+        @Body request: FirebaseUserCreateRequest
     ): Response<ApiResponse<User>>
     
     @POST(Config.Endpoints.LOGIN)
-    suspend fun loginUser(
-        @Body request: LoginRequest
+    suspend fun loginWithFirebaseToken(
+        @Body request: FirebaseAuthRequest
     ): Response<ApiResponse<LoginResponseData>>
     
-    @POST(Config.Endpoints.VERIFY_TOKEN)
+    @GET(Config.Endpoints.VERIFY_TOKEN)
     suspend fun verifyToken(
         @Header("Authorization") token: String
-    ): Response<ApiResponse<User>>
+    ): Response<ApiResponse<Map<String, Any>>>
+    
+    @POST(Config.Endpoints.REFRESH_TOKEN)
+    suspend fun refreshToken(
+        @Header("Authorization") token: String
+    ): Response<ApiResponse<LoginResponseData>>
     
     @GET(Config.Endpoints.GET_USER_PROFILE)
     suspend fun getUserProfile(
@@ -32,9 +37,4 @@ interface UserApiService {
         @Header("Authorization") token: String,
         @Body request: Map<String, Any>
     ): Response<ApiResponse<User>>
-    
-    @POST(Config.Endpoints.LOGIN)
-    suspend fun loginWithFirebaseToken(
-        @Body request: FirebaseAuthRequest
-    ): Response<ApiResponse<LoginResponseData>>
 }

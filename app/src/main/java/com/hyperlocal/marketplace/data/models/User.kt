@@ -46,6 +46,15 @@ data class UserCreateRequest(
     val firebaseToken: String
 )
 
+data class FirebaseUserCreateRequest(
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("role")
+    val role: UserRole,
+    @SerializedName("firebase_token")
+    val firebaseToken: String
+)
+
 data class FirebaseAuthRequest(
     @SerializedName("firebase_token")
     val firebaseToken: String

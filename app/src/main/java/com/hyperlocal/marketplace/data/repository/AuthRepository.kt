@@ -59,12 +59,11 @@ class AuthRepository @Inject constructor(
     }
 
     // Backend Authentication
-    suspend fun registerUser(name: String, email: String, phone: String, role: UserRole): Response<ApiResponse<User>> {
-        val request = RegisterRequest(
+    suspend fun registerUser(name: String, role: UserRole, firebaseToken: String): Response<ApiResponse<User>> {
+        val request = FirebaseUserCreateRequest(
             name = name,
-            email = email,
-            phone = phone,
-            role = role.name.lowercase()
+            role = role,
+            firebaseToken = firebaseToken
         )
         return userApiService.registerUser(request)
     }

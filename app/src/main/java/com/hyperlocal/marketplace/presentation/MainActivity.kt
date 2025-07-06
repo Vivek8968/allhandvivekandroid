@@ -38,8 +38,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Initialize Google Sign-In
-        googleSignInHelper.initialize(this, Config.Firebase.WEB_CLIENT_ID)
+        // Initialize Google Sign-In only if enabled and properly configured
+        if (Config.Firebase.ENABLE_GOOGLE_SIGNIN) {
+            try {
+                googleSignInHelper.initialize(this, Config.Firebase.WEB_CLIENT_ID)
+                Log.d(TAG, "Google Sign-In initialized successfully")
+            } catch (e: IllegalArgumentException) {
+                Log.e(TAG, "Google Sign-In configuration error: ${e.message}")
+            }
+        } else {
+            Log.d(TAG, "Google Sign-In is disabled in configuration")
+        }
         
         // Set up the ActivityResultLauncher for Google Sign-In
         googleSignInLauncher = registerForActivityResult(
@@ -71,7 +80,22 @@ class MainActivity : ComponentActivity() {
     }
     
     private fun launchGoogleSignIn() {
-        val signInIntent = googleSignInHelper.getSignInIntent()
-        googleSignInLauncher.launch(signInIntent)
+        if (!Config.Firebase.ENABLE_GOOGLE_SIGNIN) {
+            Log.w(TAG, "Google Sign-In is disabled in configuration")
+            return
+        }
+        
+        if (!googleSignInHelper.isConfigured()) {
+            Log.e(TAG, "Google Sign-In is not properly configured")
+            return
+        }
+        
+        try {
+            val signInIntent = googleSignInHelper.getSignInIntent()
+            googleSignInLauncher.launch(signInIntent)
+            Log.d(TAG, "Launching Google Sign-In intent")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error launching Google Sign-In: ${e.message}", e)
+        }
     }
 }

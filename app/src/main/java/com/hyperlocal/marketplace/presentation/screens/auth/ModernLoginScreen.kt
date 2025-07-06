@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.activity.ComponentActivity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,6 +28,7 @@ import com.hyperlocal.marketplace.presentation.components.SocialLoginType
 import com.hyperlocal.marketplace.presentation.theme.Gray300
 import com.hyperlocal.marketplace.presentation.theme.Gray600
 import com.hyperlocal.marketplace.presentation.theme.Primary
+import com.hyperlocal.marketplace.config.Config
 
 /**
  * Modern Myntra-style login screen with multiple authentication options
@@ -41,9 +43,11 @@ fun ModernLoginScreen(
     var showPhoneVerification by remember { mutableStateOf(false) }
     var phoneNumber by remember { mutableStateOf("") }
     var verificationCode by remember { mutableStateOf("") }
-    var isCodeSent by remember { mutableStateOf(false) }
+    // Use the state from ViewModel instead of local state
+    val isCodeSent = uiState.isCodeSent
     
     val context = LocalContext.current
+    val activity = context as ComponentActivity
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(uiState.isLoggedIn) {
@@ -156,8 +160,7 @@ fun ModernLoginScreen(
                 Button(
                     onClick = {
                         if (phoneNumber.isNotBlank()) {
-                            viewModel.sendPhoneVerificationCode(phoneNumber)
-                            isCodeSent = true
+                            viewModel.sendPhoneVerificationCode(phoneNumber, activity)
                         }
                     },
                     modifier = Modifier
@@ -261,8 +264,16 @@ fun ModernLoginScreen(
             SocialLoginButton(
                 type = SocialLoginType.GOOGLE,
                 onClick = { 
-                    Toast.makeText(context, "Signing in with Google...", Toast.LENGTH_SHORT).show()
-                    onGoogleSignInRequested()
+                    if (Config.Firebase.ENABLE_GOOGLE_SIGNIN) {
+                        Toast.makeText(context, "Signing in with Google...", Toast.LENGTH_SHORT).show()
+                        onGoogleSignInRequested()
+                    } else {
+                        Toast.makeText(
+                            context, 
+                            "Google Sign-In is not configured. Please use phone authentication.", 
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             )
             

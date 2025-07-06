@@ -62,7 +62,7 @@ class AuthViewModel @Inject constructor(
     }
     
     // Phone Authentication
-    fun sendPhoneVerificationCode(phoneNumber: String) {
+    fun sendPhoneVerificationCode(phoneNumber: String, activity: Activity) {
         _uiState.update { it.copy(isLoading = true, error = "") }
         
         val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -71,9 +71,21 @@ class AuthViewModel @Inject constructor(
             }
             
             override fun onVerificationFailed(e: FirebaseException) {
+                val errorMessage = when {
+                    e.message?.contains("billing_not_enabled") == true -> 
+                        "Phone authentication is not enabled. Please contact support."
+                    e.message?.contains("invalid-phone-number") == true -> 
+                        "Invalid phone number format. Please include country code."
+                    e.message?.contains("too-many-requests") == true -> 
+                        "Too many requests. Please try again later."
+                    e.message?.contains("app-not-authorized") == true -> 
+                        "App not authorized for phone authentication."
+                    else -> e.message ?: "Phone verification failed"
+                }
+                
                 _uiState.update { it.copy(
                     isLoading = false,
-                    error = e.message ?: "Verification failed"
+                    error = errorMessage
                 ) }
             }
             
@@ -83,13 +95,17 @@ class AuthViewModel @Inject constructor(
             ) {
                 this@AuthViewModel.verificationId = verificationId
                 this@AuthViewModel.resendToken = token
-                _uiState.update { it.copy(isLoading = false) }
+                _uiState.update { it.copy(
+                    isLoading = false,
+                    isCodeSent = true
+                ) }
             }
         }
         
         val options = PhoneAuthOptions.newBuilder()
             .setPhoneNumber(phoneNumber)
             .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(activity)
             .setCallbacks(callbacks)
             .build()
         
@@ -218,30 +234,60 @@ class AuthViewModel @Inject constructor(
         }
     }
     
-    fun registerWithEmailPassword(name: String, email: String, phone: String, password: String) {
+    fun registerWithEmailPassword(name: String, email: String, phone: String, password: String, role: UserRole = UserRole.CUSTOMER) {
         _uiState.update { it.copy(isLoading = true, error = "") }
         
         viewModelScope.launch {
             try {
+                // Create Firebase user with email and password
                 val user = authRepository.createUserWithEmailAndPassword(email, password)
                 if (user != null) {
-                    // Register with backend
-                    val response = authRepository.registerUser(name, email, phone, UserRole.CUSTOMER)
-                    if (response.isSuccessful && response.body() != null) {
-                        _uiState.update { it.copy(
-                            isLoading = false,
-                            isRegistered = true
-                        ) }
+                    // Get Firebase ID token
+                    val firebaseToken = authRepository.getIdToken()
+                    if (firebaseToken != null) {
+                        // Register with backend using Firebase token
+                        val response = authRepository.registerUser(name, role, firebaseToken)
+                        if (response.isSuccessful && response.body() != null) {
+                            val userData = response.body()!!.data
+                            if (userData != null) {
+                                // Save user data locally
+                                authRepository.saveUserData("", userData)
+                                _uiState.update { it.copy(
+                                    isLoading = false,
+                                    isRegistered = true,
+                                    isLoggedIn = true,
+                                    userRole = role.name,
+                                    userName = name,
+                                    userEmail = email,
+                                    userPhone = phone
+                                ) }
+                            } else {
+                                _uiState.update { it.copy(
+                                    isLoading = false,
+                                    error = "Registration successful but no user data received"
+                                ) }
+                            }
+                        } else {
+                            val errorMessage = try {
+                                response.errorBody()?.string() ?: "Registration failed"
+                            } catch (e: Exception) {
+                                "Registration failed: ${response.message()}"
+                            }
+                            _uiState.update { it.copy(
+                                isLoading = false,
+                                error = errorMessage
+                            ) }
+                        }
                     } else {
                         _uiState.update { it.copy(
                             isLoading = false,
-                            error = response.errorBody()?.string() ?: "Registration failed"
+                            error = "Failed to get Firebase token"
                         ) }
                     }
                 } else {
                     _uiState.update { it.copy(
                         isLoading = false,
-                        error = "Registration failed"
+                        error = "Failed to create Firebase account"
                     ) }
                 }
             } catch (e: Exception) {
@@ -376,6 +422,7 @@ data class AuthUiState(
     val isLoading: Boolean = false,
     val isLoggedIn: Boolean = false,
     val isRegistered: Boolean = false,
+    val isCodeSent: Boolean = false,
     val userRole: String? = null,
     val userName: String? = null,
     val userEmail: String? = null,

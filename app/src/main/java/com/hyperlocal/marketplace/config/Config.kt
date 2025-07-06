@@ -20,50 +20,53 @@ object Config {
     const val IS_DEBUG = true
     
     // Base host for microservices
-    private const val DEBUG_BASE_HOST = "http://192.168.1.8"  // Local development IP
+    private const val DEBUG_BASE_HOST = "http://192.168.1.3"  // Local development IP
     private const val PRODUCTION_BASE_HOST = "https://work-1-hhizqbkkwgjdnapz.prod-runtime.all-hands.dev"
     
     private val BASE_HOST = if (IS_DEBUG) DEBUG_BASE_HOST else PRODUCTION_BASE_HOST
     
     // Microservice URLs - Each service has its own port and base path
-    val USER_SERVICE_URL = "$BASE_HOST:8001/api/users/"
-    val SELLER_SERVICE_URL = "$BASE_HOST:8002/api/sellers/"
-    val CUSTOMER_SERVICE_URL = "$BASE_HOST:8003/api/customers/"
-    val CATALOG_SERVICE_URL = "$BASE_HOST:8004/api/catalog/"
-    val ADMIN_SERVICE_URL = "$BASE_HOST:8005/api/admin/"
+    val USER_SERVICE_URL = "$BASE_HOST:8001/"
+    val SELLER_SERVICE_URL = "$BASE_HOST:8002/"
+    val CUSTOMER_SERVICE_URL = "$BASE_HOST:8003/"
+    val CATALOG_SERVICE_URL = "$BASE_HOST:8004/"
+    val ADMIN_SERVICE_URL = "$BASE_HOST:8005/"
     
     // API Endpoints - Updated for microservices architecture
     object Endpoints {
-        // User/Auth Service - /api/users/ prefix is now in the base URL
+        // User/Auth Service endpoints
         const val REGISTER = "auth/register"
         const val LOGIN = "auth/login"
         const val VERIFY_TOKEN = "auth/verify-token"
-        const val GET_USER_PROFILE = "me"
-        const val UPDATE_USER_PROFILE = "me"
+        const val REFRESH_TOKEN = "auth/refresh-token"
+        const val GET_USER_PROFILE = "users/me"
+        const val UPDATE_USER_PROFILE = "users/me"
         
-        // Seller/Vendor Service - /api/sellers/ prefix is now in the base URL
-        const val GET_VENDOR_SHOP = "shop"
-        const val CREATE_VENDOR_SHOP = "shop"
-        const val UPDATE_VENDOR_SHOP = "shop"
-        const val GET_VENDOR_PRODUCTS = "products"
-        const val ADD_PRODUCT_FROM_CATALOG = "products/add-from-catalog"
-        
-        // Customer/Shop Service - /api/customers/ prefix is now in the base URL
-        const val GET_ALL_SHOPS = "shops"
-        const val GET_SHOP_BY_ID = "shops/{id}"
-        const val GET_SHOP_PRODUCTS = "shops/{id}/products"
+        // Seller/Shop Service endpoints
         const val CREATE_SHOP = "shops"
-        const val UPDATE_SHOP = "shops/{id}"
-        const val ADD_PRODUCT_TO_SHOP = "shops/{id}/products"
-        const val UPDATE_SHOP_PRODUCT = "shops/{shop_id}/products/{product_id}"
-        const val DELETE_SHOP_PRODUCT = "shops/{shop_id}/products/{product_id}"
+        const val GET_MY_SHOP = "shops/me"
+        const val UPDATE_MY_SHOP = "shops/me"
+        const val GET_SHOP_BY_ID = "shops/{id}"
+        const val UPLOAD_SHOP_IMAGE = "shops/me/images/upload"
         
-        // Catalog Service - /api/catalog/ prefix is now in the base URL
+        // Inventory Service endpoints
+        const val GET_VENDOR_PRODUCTS = "inventory"
+        const val ADD_PRODUCT_FROM_CATALOG = "inventory/add-from-catalog"
+        const val UPDATE_INVENTORY_ITEM = "inventory/{id}"
+        const val DELETE_INVENTORY_ITEM = "inventory/{id}"
+        
+        // Customer Service endpoints
+        const val GET_ALL_SHOPS = "shops"
+        const val SEARCH_SHOPS = "shops/search"
+        const val GET_SHOP_PRODUCTS = "shops/{id}/products"
+        
+        // Catalog Service endpoints
         const val GET_CATALOG = "items"
         const val GET_CATALOG_CATEGORIES = "categories"
         const val GET_PRODUCT_BY_ID = "items/{id}"
+        const val SEARCH_CATALOG = "items/search"
         
-        // Admin Service - /api/admin/ prefix is now in the base URL
+        // Admin Service endpoints
         const val ADMIN_STATS = "stats"
         const val ADMIN_USERS = "users"
         const val ADMIN_SHOPS = "shops"
@@ -73,10 +76,20 @@ object Config {
     object Firebase {
         // Firebase project configuration
         const val PROJECT_ID = "hyperlocal-marketplace"
-        const val WEB_CLIENT_ID = "1234567890-abcdefghijklmnopqrstuvwxyz.apps.googleusercontent.com"
         
-        // Note: This is a placeholder client ID. You need to replace it with your actual
-        // Web Client ID from the Firebase Console > Authentication > Sign-in method > Google
+        // IMPORTANT: Replace this with your actual Web Client ID from Firebase Console
+        // Go to: Firebase Console > Project Settings > General > Your apps > Web app
+        // Copy the "Web client ID" from OAuth 2.0 client IDs
+        const val WEB_CLIENT_ID = "YOUR_ACTUAL_WEB_CLIENT_ID_HERE"
+        
+        // For development/testing, you can temporarily disable Google Sign-In
+        const val ENABLE_GOOGLE_SIGNIN = false
+        
+        // Note: To enable Google Sign-In:
+        // 1. Replace WEB_CLIENT_ID with actual value from Firebase Console
+        // 2. Add SHA-1 certificate fingerprint to Firebase project
+        // 3. Download updated google-services.json
+        // 4. Set ENABLE_GOOGLE_SIGNIN = true
     }
     
     // App Configuration
@@ -114,5 +127,26 @@ object Config {
         const val SHOPS_CACHE_DURATION_MINUTES = 5
         const val CATALOG_CACHE_DURATION_HOURS = 24
         const val USER_PROFILE_CACHE_DURATION_HOURS = 1
+    }
+    
+    // Debug Configuration
+    object Debug {
+        const val ENABLE_NETWORK_LOGGING = IS_DEBUG
+        const val ENABLE_AUTH_LOGGING = IS_DEBUG
+        const val ENABLE_API_LOGGING = IS_DEBUG
+        
+        // Test credentials for development
+        const val TEST_EMAIL = "test@example.com"
+        const val TEST_PASSWORD = "password123"
+        const val TEST_PHONE = "+1234567890"
+        
+        // Backend connectivity test endpoints
+        fun getHealthCheckUrls(): List<String> = listOf(
+            "$USER_SERVICE_URL/health",
+            "$SELLER_SERVICE_URL/health", 
+            "$CUSTOMER_SERVICE_URL/health",
+            "$CATALOG_SERVICE_URL/health",
+            "$ADMIN_SERVICE_URL/health"
+        )
     }
 }
