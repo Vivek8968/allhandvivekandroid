@@ -21,6 +21,12 @@ import retrofit2.Response
 interface UserTestApiService {
     @POST("auth/login")
     suspend fun login(@Body request: LoginRequest): Response<ApiResponse<LoginResponseData>>
+    
+    @POST("api/users/login")
+    suspend fun traditionalLogin(@Body request: TraditionalLoginRequest): Response<ApiResponse<TraditionalLoginResponse>>
+    
+    @POST("api/users/register")
+    suspend fun traditionalRegister(@Body request: TraditionalRegisterRequest): Response<ApiResponse<User>>
 }
 
 interface CustomerTestApiService {

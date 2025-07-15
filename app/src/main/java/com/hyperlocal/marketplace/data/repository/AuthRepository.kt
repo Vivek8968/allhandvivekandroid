@@ -12,6 +12,9 @@ import com.hyperlocal.marketplace.data.models.FirebaseAuthRequest
 import com.hyperlocal.marketplace.data.models.FirebaseUserCreateRequest
 import com.hyperlocal.marketplace.data.models.LoginResponseData
 import com.hyperlocal.marketplace.data.models.RegisterRequest
+import com.hyperlocal.marketplace.data.models.TraditionalLoginRequest
+import com.hyperlocal.marketplace.data.models.TraditionalLoginResponse
+import com.hyperlocal.marketplace.data.models.TraditionalRegisterRequest
 import com.hyperlocal.marketplace.data.models.User
 import com.hyperlocal.marketplace.data.models.UserRole
 import kotlinx.coroutines.tasks.await
@@ -59,7 +62,23 @@ class AuthRepository @Inject constructor(
         userPreferencesRepository.clearUserData()
     }
 
-    // Backend Authentication
+    // Traditional Backend Authentication
+    suspend fun registerUserTraditional(name: String, email: String, password: String, role: String = "user"): Response<ApiResponse<User>> {
+        val request = TraditionalRegisterRequest(
+            name = name,
+            email = email,
+            password = password,
+            role = role
+        )
+        return userApiService.registerUserTraditional(request)
+    }
+
+    suspend fun loginUserTraditional(email: String, password: String): Response<ApiResponse<TraditionalLoginResponse>> {
+        val request = TraditionalLoginRequest(email, password)
+        return userApiService.loginUserTraditional(request)
+    }
+
+    // Firebase Backend Authentication (existing)
     suspend fun registerUser(name: String, role: UserRole, firebaseToken: String): Response<ApiResponse<User>> {
         val request = FirebaseUserCreateRequest(
             name = name,
@@ -92,6 +111,25 @@ class AuthRepository @Inject constructor(
             email = user.email,
             phone = user.phone,
             firebaseUid = user.firebaseUid
+        )
+    }
+
+    // Save traditional user data to preferences
+    suspend fun saveTraditionalUserData(token: String, loginResponse: TraditionalLoginResponse) {
+        userPreferencesRepository.saveAuthToken(token)
+        // Convert role string to UserRole enum, default to CUSTOMER
+        val userRole = when (loginResponse.role?.lowercase()) {
+            "admin" -> UserRole.ADMIN
+            "seller" -> UserRole.SELLER
+            else -> UserRole.CUSTOMER
+        }
+        userPreferencesRepository.saveUserRole(userRole)
+        userPreferencesRepository.saveUserInfo(
+            userId = "0", // Traditional auth might not have user ID
+            name = loginResponse.name,
+            email = loginResponse.email,
+            phone = null,
+            firebaseUid = ""
         )
     }
 

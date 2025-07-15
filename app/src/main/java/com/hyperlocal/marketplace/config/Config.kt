@@ -20,13 +20,13 @@ object Config {
     const val IS_DEBUG = true
     
     // Base host for microservices
-    private const val DEBUG_BASE_HOST = "http://192.168.1.3"  // Local development IP
+    private const val DEBUG_BASE_HOST = "http://10.0.2.2:8080"  // For Android emulator (localhost equivalent)
     private const val PRODUCTION_BASE_HOST = "https://work-1-hhizqbkkwgjdnapz.prod-runtime.all-hands.dev"
     
     private val BASE_HOST = if (IS_DEBUG) DEBUG_BASE_HOST else PRODUCTION_BASE_HOST
     
     // Microservice URLs - Each service has its own port and base path
-    val USER_SERVICE_URL = "$BASE_HOST:8001/"
+    val USER_SERVICE_URL = "$BASE_HOST/"
     val SELLER_SERVICE_URL = "$BASE_HOST:8002/"
     val CUSTOMER_SERVICE_URL = "$BASE_HOST:8003/"
     val CATALOG_SERVICE_URL = "$BASE_HOST:8004/"

@@ -302,6 +302,90 @@ class AuthViewModel @Inject constructor(
         }
     }
     
+    // Traditional Email/Password Authentication
+    fun loginWithTraditionalAuth(email: String, password: String) {
+        _uiState.update { it.copy(isLoading = true, error = "") }
+        
+        viewModelScope.launch {
+            try {
+                val response = authRepository.loginUserTraditional(email, password)
+                if (response.isSuccessful && response.body() != null) {
+                    val apiResponse = response.body()!!
+                    if (apiResponse.status && apiResponse.data != null) {
+                        val loginData = apiResponse.data
+                        // Save user data
+                        authRepository.saveTraditionalUserData(loginData.token, loginData)
+                        _uiState.update { it.copy(
+                            isLoading = false,
+                            isLoggedIn = true,
+                            userRole = loginData.role ?: "user",
+                            userName = loginData.name,
+                            userEmail = loginData.email,
+                            userPhone = null
+                        ) }
+                    } else {
+                        _uiState.update { it.copy(
+                            isLoading = false,
+                            error = apiResponse.message ?: "Login failed"
+                        ) }
+                    }
+                } else {
+                    val errorMessage = try {
+                        response.errorBody()?.string() ?: "Login failed"
+                    } catch (e: Exception) {
+                        "Login failed: ${response.message()}"
+                    }
+                    _uiState.update { it.copy(
+                        isLoading = false,
+                        error = errorMessage
+                    ) }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(
+                    isLoading = false,
+                    error = e.message ?: "Login failed"
+                ) }
+            }
+        }
+    }
+    
+    fun registerWithTraditionalAuth(name: String, email: String, password: String, role: String = "user") {
+        _uiState.update { it.copy(isLoading = true, error = "") }
+        
+        viewModelScope.launch {
+            try {
+                val response = authRepository.registerUserTraditional(name, email, password, role)
+                if (response.isSuccessful && response.body() != null) {
+                    val apiResponse = response.body()!!
+                    if (apiResponse.status && apiResponse.data != null) {
+                        // Registration successful, now login
+                        loginWithTraditionalAuth(email, password)
+                    } else {
+                        _uiState.update { it.copy(
+                            isLoading = false,
+                            error = apiResponse.message ?: "Registration failed"
+                        ) }
+                    }
+                } else {
+                    val errorMessage = try {
+                        response.errorBody()?.string() ?: "Registration failed"
+                    } catch (e: Exception) {
+                        "Registration failed: ${response.message()}"
+                    }
+                    _uiState.update { it.copy(
+                        isLoading = false,
+                        error = errorMessage
+                    ) }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(
+                    isLoading = false,
+                    error = e.message ?: "Registration failed"
+                ) }
+            }
+        }
+    }
+    
     fun updateUserRole(role: UserRole) {
         _uiState.update { it.copy(isLoading = true, error = "") }
         

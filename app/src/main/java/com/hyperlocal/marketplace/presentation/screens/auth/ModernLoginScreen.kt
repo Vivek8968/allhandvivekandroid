@@ -321,13 +321,31 @@ fun ModernLoginScreen(
             
             Spacer(modifier = Modifier.height(24.dp))
             
-            // Login with Email Link
+            // Traditional Email/Password Login
+            OutlinedButton(
+                onClick = { navController.navigate("traditional_login") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = Primary
+                )
+            ) {
+                Text(
+                    text = "Login with Email & Password",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // Register Link
             TextButton(
                 onClick = { navController.navigate("register") },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "Already have an account? Login",
+                    text = "Don't have an account? Sign Up",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Primary
                 )

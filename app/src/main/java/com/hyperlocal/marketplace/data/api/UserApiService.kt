@@ -7,6 +7,18 @@ import retrofit2.http.*
 
 interface UserApiService {
     
+    // Traditional email/password authentication endpoints
+    @POST("api/users/register")
+    suspend fun registerUserTraditional(
+        @Body request: TraditionalRegisterRequest
+    ): Response<ApiResponse<User>>
+    
+    @POST("api/users/login")
+    suspend fun loginUserTraditional(
+        @Body request: TraditionalLoginRequest
+    ): Response<ApiResponse<TraditionalLoginResponse>>
+    
+    // Firebase authentication endpoints (existing)
     @POST("auth/register")
     suspend fun registerUser(
         @Body request: FirebaseUserCreateRequest

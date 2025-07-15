@@ -99,3 +99,33 @@ data class RegisterRequest(
     @SerializedName("firebase_token")
     val firebaseToken: String
 )
+
+// Traditional authentication data models
+data class TraditionalRegisterRequest(
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("email")
+    val email: String,
+    @SerializedName("password")
+    val password: String,
+    @SerializedName("role")
+    val role: String = "user"
+)
+
+data class TraditionalLoginRequest(
+    @SerializedName("email")
+    val email: String,
+    @SerializedName("password")
+    val password: String
+)
+
+data class TraditionalLoginResponse(
+    @SerializedName("token")
+    val token: String,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("email")
+    val email: String,
+    @SerializedName("role")
+    val role: String? = null
+)

@@ -17,6 +17,8 @@ import com.hyperlocal.marketplace.presentation.screens.auth.AuthViewModel
 import com.hyperlocal.marketplace.presentation.screens.auth.ModernLoginScreen
 import com.hyperlocal.marketplace.presentation.screens.auth.ModernRegisterScreen
 import com.hyperlocal.marketplace.presentation.screens.auth.RoleSelectionScreen
+import com.hyperlocal.marketplace.presentation.screens.auth.TraditionalLoginScreen
+import com.hyperlocal.marketplace.presentation.screens.auth.TraditionalRegisterScreen
 import com.hyperlocal.marketplace.presentation.screens.categories.CategoriesScreen
 import com.hyperlocal.marketplace.presentation.screens.help.HelpScreen
 import com.hyperlocal.marketplace.presentation.screens.home.HomeScreen
@@ -58,6 +60,12 @@ fun HyperlocalApp(
             }
             composable("role_selection") {
                 RoleSelectionScreen(navController = navController)
+            }
+            composable("traditional_login") {
+                TraditionalLoginScreen(navController = navController)
+            }
+            composable("traditional_register") {
+                TraditionalRegisterScreen(navController = navController)
             }
             
             // Customer screens
